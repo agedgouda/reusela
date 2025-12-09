@@ -22,6 +22,7 @@ class Index extends Component
                 'id' => (string) $t->id,
                 'title' => $t->title,
                 'sort_order' => $t->sort_order,
+                'icon' => $t->icon,
             ];
         })->toArray();
     }

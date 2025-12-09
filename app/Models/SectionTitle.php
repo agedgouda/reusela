@@ -12,6 +12,7 @@ class SectionTitle extends Model
     protected $fillable = [
         'title',
         'sort_order',
+        'icon',
     ];
 
     public function sections()

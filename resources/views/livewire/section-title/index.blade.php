@@ -47,11 +47,15 @@
                 <div class="handle cursor-move pr-4 text-gray-400 hover:text-gray-600">☰</div>
 
                 <div class="flex-1">
-                    <div class="font-medium"> {{ $title['sort_order'] }}. {{ $title['title'] }}</div>
+                    <div class="flex items-center font-medium space-x-2">
+                    <span>{{ $title['sort_order'] }}.</span>
+                    @if ($title['icon']) <img class="h-5" src="/icons/{{ $title['icon'] }}" alt=""> @endif
+                    <span>{{ $title['title'] }}</span>
+                </div>
+
                 </div>
 
                 <div class="space-x-2">
-                    <a href="{{ route('section-title.show', $title['id']) }}" class="text-blue-600">View</a>
                     <a href="{{ route('section-title.edit', $title['id']) }}" class="text-green-600">Edit</a>
                 </div>
             </div>
