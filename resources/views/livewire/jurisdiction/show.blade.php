@@ -22,15 +22,24 @@
                 <div class="p-4 border rounded shadow-sm bg-white dark:bg-zinc-700">
                     <div class="flex justify-between items-center">
                         <div class="font-semibold text-gray-800 dark:text-gray-100">
-                            {{ $section->sectionTitle->title }}
+                            <div class="flex items-center font-medium space-x-2">
+                                @if ($section->sectionTitle->icon) <img class="h-5" src="/icons/{{ $section->sectionTitle->icon  }}" alt=""> @endif
+                                <span>{{ $section->sectionTitle->title }}</span>
+                            </div>
                         </div>
-
                         @if($editable)
                             {{-- Edit Button --}}
+                            @if($editingSectionId != $section->id )
                             <button wire:click="toggleEditSection({{ $section->id }})"
                                     class="text-blue-600 hover:underline text-sm">
                                 Edit
                             </button>
+                            @else
+                            <button wire:click="toggleEditSection({{ $section->id }})"
+                                    class="text-blue-600 hover:underline text-sm">
+                                Cancel
+                            </button>
+                            @endif
                         @endif
                     </div>
 
