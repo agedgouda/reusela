@@ -53,5 +53,5 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{sectionTitle}', SectionTitleShow::class)->name('show');
             Route::get('/{sectionTitle}/edit', SectionTitleEdit::class)->name('edit');
         });
-Route::get('/test-sortable', \App\Livewire\TestSortable::class);
+
 });

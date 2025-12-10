@@ -26,11 +26,18 @@
                         </div>
 
                         @if($editable)
-                            {{-- Edit Button --}}
+                            @if($editingSectionId != $section->id)
                             <button wire:click="toggleEditSection({{ $section->id }})"
                                     class="text-blue-600 hover:underline text-sm">
                                 Edit
                             </button>
+                            @else
+                            <button wire:click="toggleEditSection({{ $section->id }})"
+                                    class="text-blue-600 hover:underline text-sm">
+                                Cancel
+                            </button>
+                            @endif
+
                         @endif
                     </div>
 

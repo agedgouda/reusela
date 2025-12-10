@@ -51,7 +51,6 @@
             Save
         </button>
 
-        {{-- Add mode --}}
         @unless($section->exists)
             <button wire:click="save(true)" class="bg-green-600 text-white px-3 py-1 rounded">
                 Save & Add New
@@ -61,8 +60,6 @@
                     class="bg-gray-500 text-white px-3 py-1 rounded">
                 Cancel
             </button>
-
-        {{-- Edit mode --}}
         @else
             <button
                 wire:click="$dispatch('toggleEditSection', { sectionId: {{ $section->id }} })"
@@ -71,6 +68,6 @@
                 Cancel
             </button>
         @endunless
-
     </div>
+
 </div>
