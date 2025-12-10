@@ -48,11 +48,10 @@
 
                 <div class="flex-1">
                     <div class="flex items-center font-medium space-x-2">
-                    <span>{{ $title['sort_order'] }}.</span>
-                    @if ($title['icon']) <img class="h-5" src="/icons/{{ $title['icon'] }}" alt=""> @endif
-                    <span>{{ $title['title'] }}</span>
-                </div>
-
+                        <span>{{ $title['sort_order'] }}.</span>
+                        @if ($title['icon']) <img class="h-5" src="/icons/{{ $title['icon'] }}" alt=""> @endif
+                        <span>{{ $title['title'] }}</span>
+                    </div>
                 </div>
 
                 <div class="space-x-2">

@@ -21,8 +21,11 @@
             @foreach($jurisdiction->sections->sortBy(fn($s) => $s->sectionTitle->sort_order) as $section)
                 <div class="p-4 border rounded shadow-sm bg-white dark:bg-zinc-700">
                     <div class="flex justify-between items-center">
-                        <div class="font-semibold text-gray-800 dark:text-gray-100">
-                            {{ $section->sectionTitle->title }}
+                        <div class="flex-1">
+                            <div class="flex items-center font-semibold text-gray-800 dark:text-gray-100 space-x-2">
+                                @if ($section->sectionTitle->icon) <img class="h-8" src="/icons/{{ $section->sectionTitle->icon }}" alt=""> @endif
+                                <span class="text-xl">{{ $section->sectionTitle->title }}</span>
+                            </div>
                         </div>
 
                         @if($editable)
