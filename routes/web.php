@@ -21,7 +21,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::get('/search', SearchIndex::class)->name('search.index');
+//Route::get('/search', SearchIndex::class)->name('search.index');
+Route::get('/search', function () {
+    return view('search-page'); // a Blade file you create
+})->name('search.index');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
