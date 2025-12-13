@@ -15,9 +15,13 @@ use App\Livewire\SectionTitle\Show as SectionTitleShow;
 use App\Livewire\SectionTitle\Create as SectionTitleCreate;
 use App\Livewire\SectionTitle\Edit as SectionTitleEdit;
 
+use App\Livewire\Search\Index as SearchIndex;
+
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+Route::get('/search', SearchIndex::class)->name('search.index');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

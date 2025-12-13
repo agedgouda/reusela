@@ -23,10 +23,14 @@ class Show extends Component
         'toggleEditSection'
     ];
 
-    public function mount(Jurisdiction $jurisdiction)
+    public function mount(Jurisdiction $jurisdiction, ?bool $editable = null)
     {
-        $this->jurisdiction      = $jurisdiction;
-        $this->jurisdictionId    = $jurisdiction->id;
+        $this->jurisdiction   = $jurisdiction;
+        $this->jurisdictionId = $jurisdiction->id;
+
+        if (! is_null($editable)) {
+            $this->editable = $editable;
+        }
 
         $this->loadSections();
     }
