@@ -8,7 +8,7 @@
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
-        <form wire:submit.prevent="createUser('redirect')" class="flex flex-col gap-6">
+        <form class="flex flex-col gap-6">
             <!-- Name -->
             <flux:input
                 name="name"
@@ -59,17 +59,22 @@
                 wire:model.defer="password_confirmation"
             />
 
-            <div class="flex flex-col sm:flex-row gap-3 mt-4">
-                <!-- Save button: redirects to /users -->
-                <flux:button type="submit" variant="primary" class="w-full sm:w-auto">
+            <div class="flex flex-col sm:flex-row gap-3 mt-4 justify-end">
+                <!-- Save: redirects to /user -->
+                <flux:button
+                    type="button"
+                    variant="primary"
+                    class="w-full sm:w-auto"
+                    wire:click="saveAndRedirect"
+                >
                     {{ __('Save') }}
                 </flux:button>
 
-                <!-- Save & Add New: calls Livewire method with parameter -->
+                <!-- Save & Add New: resets form -->
                 <flux:button
                     type="button"
                     class="w-full sm:w-auto"
-                    wire:click="createUser('reset')"
+                    wire:click="saveAndAddNew"
                 >
                     {{ __('Save & Add New') }}
                 </flux:button>

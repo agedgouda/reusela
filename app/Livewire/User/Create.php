@@ -19,8 +19,8 @@ class Create extends Component
         'password' => 'required|string|min:8|confirmed',
     ];
 
-    // Accept a parameter to determine the action after saving
-    public function createUser($action = 'redirect')
+    // Save and redirect to /user
+    public function saveAndRedirect()
     {
         $this->validate();
 
@@ -30,13 +30,24 @@ class Create extends Component
             'password' => Hash::make($this->password),
         ]);
 
-        if ($action === 'redirect') {
-            return redirect('/user');
-        }
+       //$this->redirect('/user');
+        return redirect()->route('user.index');
+    }
 
-        // Otherwise reset form for "save & add new"
+    // Save and reset form for adding another user
+    public function saveAndAddNew()
+    {
+        $this->validate();
+
+        User::create([
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => Hash::make($this->password),
+        ]);
+
         $this->reset(['name', 'email', 'password', 'password_confirmation']);
         session()->flash('status', 'User created successfully. You can add another one.');
+        return redirect()->route('user.create');
     }
 
     public function render()
