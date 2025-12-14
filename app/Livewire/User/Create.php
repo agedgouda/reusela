@@ -46,7 +46,7 @@ class Create extends Component
         ]);
 
         $this->reset(['name', 'email', 'password', 'password_confirmation']);
-        session()->flash('status', 'User created successfully. You can add another one.');
+        session()->flash('status', 'User created successfully.');
         return redirect()->route('user.create');
     }
 
