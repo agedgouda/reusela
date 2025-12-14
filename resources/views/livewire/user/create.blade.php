@@ -1,15 +1,13 @@
-<x-layouts.auth>
-    <div class="flex flex-col gap-6">
-        <x-auth-header
-            :title="__('Create a user')"
-            :description="__('Enter user details below')"
-        />
+<div class="bg-background min-h-screen md:p-10">
+    <div class="w-full  flex flex-col gap-6">
+        <!-- Page Title -->
+        <h1 class="text-2xl font-bold mt-6">Create User</h1>
 
         <!-- Session Status -->
-        <x-auth-session-status class="text-center" :status="session('status')" />
+        <x-auth-session-status :status="session('status')" class="mb-4" />
 
-        <form class="flex flex-col gap-6">
-            <!-- Name -->
+        <!-- Name -->
+        <div>
             <flux:input
                 name="name"
                 :label="__('Name')"
@@ -17,12 +15,14 @@
                 required
                 autofocus
                 autocomplete="name"
-                :placeholder="__('Full name')"
+                :placeholder="__('Name')"
                 wire:model.defer="name"
             />
-            @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
 
-            <!-- Email -->
+        </div>
+
+        <!-- Email -->
+        <div>
             <flux:input
                 name="email"
                 :label="__('Email address')"
@@ -32,9 +32,10 @@
                 placeholder="email@example.com"
                 wire:model.defer="email"
             />
-            @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </div>
 
-            <!-- Password -->
+        <!-- Password -->
+        <div>
             <flux:input
                 name="password"
                 :label="__('Password')"
@@ -45,9 +46,10 @@
                 viewable
                 wire:model.defer="password"
             />
-            @error('password') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </div>
 
-            <!-- Confirm Password -->
+        <!-- Confirm Password -->
+        <div>
             <flux:input
                 name="password_confirmation"
                 :label="__('Confirm password')"
@@ -58,27 +60,26 @@
                 viewable
                 wire:model.defer="password_confirmation"
             />
+        </div>
 
-            <div class="flex flex-col sm:flex-row gap-3 mt-4 justify-end">
-                <!-- Save: redirects to /user -->
-                <flux:button
-                    type="button"
-                    variant="primary"
-                    class="w-full sm:w-auto"
-                    wire:click="saveAndRedirect"
-                >
-                    {{ __('Save') }}
-                </flux:button>
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3 mt-4 justify-end">
+            <flux:button
+                type="button"
+                variant="primary"
+                class="w-full sm:w-auto"
+                wire:click="saveAndRedirect"
+            >
+                {{ __('Save') }}
+            </flux:button>
 
-                <!-- Save & Add New: resets form -->
-                <flux:button
-                    type="button"
-                    class="w-full sm:w-auto"
-                    wire:click="saveAndAddNew"
-                >
-                    {{ __('Save & Add New') }}
-                </flux:button>
-            </div>
-        </form>
+            <flux:button
+                type="button"
+                class="w-full sm:w-auto bg-gray-300 hover:bg-gray-400 text-gray-800"
+                wire:click="saveAndAddNew"
+            >
+                {{ __('Save & Add New') }}
+            </flux:button>
+        </div>
     </div>
-</x-layouts.auth>
+</div>
