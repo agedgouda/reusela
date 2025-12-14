@@ -6,21 +6,23 @@
     </div>
 
     <!-- Sorting headers -->
-    <div class="grid grid-cols-2">
-        <div class="font-bold cursor-pointer" wire:click="sortBy('name')">
-            Name
-            @if ($sortField === 'name')
-                <span>{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span>
-            @endif
+    <div>
+        <div class="font-bold ml-1  cursor-pointer">
+            Jurisdiction
         </div>
     </div>
 
     <!-- Display list of jurisdictions -->
     @foreach($jurisdictions as $jurisdiction)
         <a href="{{ route('jurisdiction.show', $jurisdiction->id) }}"
-        class="grid grid-cols-2 {{ $loop->odd ? 'bg-gray-200' : '' }} cursor-pointer hover:bg-gray-300"
+        class="grid  {{ $loop->odd ? 'bg-sky-200' : 'bg-gray-100' }} cursor-pointer hover:bg-sky-300 hover:text-sky-900 transition-colors duration-200"
         wire:navigate>
-            <div>{{ $jurisdiction->name }}</div>
+            <div class="flex ml-1 items-center">
+                @if($jurisdiction->sections_count)
+                    <x-heroicon-s-document-text class="w-4 h-4 mr-1 text-sky-700" />
+                @endif
+                {{ $jurisdiction->name }}
+            </div>
         </a>
     @endforeach
 

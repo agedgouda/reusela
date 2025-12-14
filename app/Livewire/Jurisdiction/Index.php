@@ -38,7 +38,7 @@ class Index extends Component
     private function getFilteredJurisdictions()
     {
         return app(Pipeline::class)
-            ->send(Jurisdiction::query())
+            ->send(Jurisdiction::query()->withCount('sections'))
             ->through([
                 new \App\Filters\NameFilter($this->filter),
             ])
