@@ -1,14 +1,14 @@
 <x-layouts.auth>
     <div class="flex flex-col gap-6">
         <x-auth-header
-            :title="__('Create an account')"
-            :description="__('Enter your details below to create your account')"
+            :title="__('Create a user')"
+            :description="__('Enter user details below')"
         />
 
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
-        <form wire:submit.prevent="createUser" class="flex flex-col gap-6">
+        <form wire:submit.prevent="createUser('redirect')" class="flex flex-col gap-6">
             <!-- Name -->
             <flux:input
                 name="name"
@@ -22,7 +22,7 @@
             />
             @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
 
-            <!-- Email Address -->
+            <!-- Email -->
             <flux:input
                 name="email"
                 :label="__('Email address')"
@@ -59,16 +59,21 @@
                 wire:model.defer="password_confirmation"
             />
 
-            <div class="flex items-center justify-end">
-                <flux:button type="submit" variant="primary" class="w-full">
-                    {{ __('Create account') }}
+            <div class="flex flex-col sm:flex-row gap-3 mt-4">
+                <!-- Save button: redirects to /users -->
+                <flux:button type="submit" variant="primary" class="w-full sm:w-auto">
+                    {{ __('Save') }}
+                </flux:button>
+
+                <!-- Save & Add New: calls Livewire method with parameter -->
+                <flux:button
+                    type="button"
+                    class="w-full sm:w-auto"
+                    wire:click="createUser('reset')"
+                >
+                    {{ __('Save & Add New') }}
                 </flux:button>
             </div>
         </form>
-
-        <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
-            <span>{{ __('Already have an account?') }}</span>
-            <flux:link :href="route('login')" wire:navigate>{{ __('Log in') }}</flux:link>
-        </div>
     </div>
 </x-layouts.auth>

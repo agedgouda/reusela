@@ -15,6 +15,12 @@ use App\Livewire\SectionTitle\Show as SectionTitleShow;
 use App\Livewire\SectionTitle\Create as SectionTitleCreate;
 use App\Livewire\SectionTitle\Edit as SectionTitleEdit;
 
+
+use App\Livewire\User\Index as UserIndex;
+use App\Livewire\User\Show as UserShow;
+use App\Livewire\User\Create as UserCreate;
+use App\Livewire\User\Edit as UserEdit;
+
 use App\Livewire\Search\Index as SearchIndex;
 
 // Route::get('/', function () {
@@ -59,6 +65,13 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/create', SectionTitleCreate::class)->name('create');
             Route::get('/{sectionTitle}', SectionTitleShow::class)->name('show');
             Route::get('/{sectionTitle}/edit', SectionTitleEdit::class)->name('edit');
+        });
+
+        Route::prefix('user')->name('user.')->group(function () {
+            Route::get('/', UserIndex::class)->name('index');
+            Route::get('/create', UserCreate::class)->name('create');
+            Route::get('/{user}', UserShow::class)->name('show');
+            Route::get('/{user}/edit', UserEdit::class)->name('edit');
         });
 
 });

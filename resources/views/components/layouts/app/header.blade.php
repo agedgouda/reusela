@@ -19,6 +19,10 @@
                 <flux:navbar.item icon="section-titles" :href="route('section-title.index')" :current="request()->routeIs('section-title.index')" wire:navigate>
                     {{ __('Section Titles') }}
                 </flux:navbar.item>
+
+                <flux:navbar.item icon="users" :href="route('user.index')" :current="request()->routeIs('user.index')" wire:navigate>
+                    {{ __('Users') }}
+                </flux:navbar.item>
             </flux:navbar>
 
             <flux:spacer />
@@ -87,6 +91,12 @@
                     <flux:navlist.item icon="section-titles" :href="route('section-title.index')" :current="request()->routeIs('section-title.index')" wire:navigate>
                         {{ __('Section Titles') }}
                     </flux:navlist.item>
+
+                    <flux:navlist.item icon="users" :href="route('user.index')" :current="request()->routeIs('user.index')" wire:navigate>
+                        {{ __('Users') }}
+                    </flux:navlist.item>
+
+
                 </flux:navlist.group>
             </flux:navlist>
 
