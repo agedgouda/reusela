@@ -17,12 +17,12 @@ use App\Livewire\SectionTitle\Edit as SectionTitleEdit;
 
 use App\Livewire\Search\Index as SearchIndex;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+// Route::get('/', function () {
+//     return view('welcome');
+// })->name('home');
 
 //Route::get('/search', SearchIndex::class)->name('search.index');
-Route::get('/search', function () {
+Route::get('/', function () {
     return view('search-page'); // a Blade file you create
 })->name('search.index');
 
