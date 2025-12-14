@@ -5,27 +5,32 @@
         <x-action-message on='error-processing' class="mb-3">
             Unable to retrieve coordinates for the address.
         </x-action-message>
-        <div class="p-5 bg-gray-100 w-full">
+
             @if(!$address)
-                @if($isProcessing)
-                    <span>Processing...</span>
-                @else
-                    <!-- Address input field when no address is selected -->
-                    <x-text-input id="location-input" class="block w-full" placeholder="Enter Address" />
-                @endif
+                <div class="p-5 bg-gray-100 w-full">
+                    @if($isProcessing)
+                        <span>Processing...</span>
+                    @else
+                        <!-- Address input field when no address is selected -->
+                        <x-text-input id="location-input" class="text-lg py-3 px-4 block w-full" placeholder="Enter Address" />
+                    @endif
+                </div>
             @else
                 <!-- Display selected address and option to reset -->
-                <div class="text-lg flex justify-between items-center font-semibold mb-2">
-                    <div>{{ $address }}</div>
+                <div class="w-full text-lg font-semibold mb-2">
+                    <div class="flex justify-end">
+                        <x-primary-button onclick="location.reload();">
+                            Change Address
+                        </x-primary-button>
+                    </div>
 
-                    <x-primary-button class="ml-auto w-fit" onclick="location.reload();">
-                        Change Address
-                    </x-primary-button>
+                    <livewire:jurisdiction.show
+                        :jurisdiction="$jurisdiction"
+                        :editable="false"
+                    />
                 </div>
-                <livewire:jurisdiction.show :jurisdiction='$jurisdiction' :editable="false" />
-            @endif
 
-        </div>
+            @endif
 
     </div>
     <script type="module" src="{{ Vite::asset('resources/js/googlemap.js') }}"></script>
