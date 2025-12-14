@@ -1,13 +1,24 @@
 <div class="p-6 space-y-4">
-    <h1 class="text-2xl font-bold">City of {{ $jurisdiction->name }}</h1>
+        @if($editable)
+        <a href="/jurisdictions" class="hover:text-blue-300 text-blue-800 mb-5"><- Back</a>
+        @endif
+        <div class="flex items-center">
 
-    {{-- Add Section Button --}}
-    @if($editable && !$showAddSectionForm)
-        <button wire:click="$toggle('showAddSectionForm')" class="bg-blue-600 text-white px-3 py-1 rounded">
-            Add Section
-        </button>
-    @endif
+            <h1 class="text-2xl font-bold">
+                @if($jurisdiction->name !== 'Unincorporated')
+                City of {{ $jurisdiction->name }}
+                @else
+                {{ $jurisdiction->name }} LA County
+                @endif
+            </h1>
 
+            {{-- Add Section Button --}}
+            @if($editable && !$showAddSectionForm)
+            <x-primary-button wire:click="$toggle('showAddSectionForm')" class="ml-auto">
+                Add Section
+            </x-primary-button>
+            @endif
+        </div>
     {{-- Add Section Form --}}
     @if($showAddSectionForm)
         <livewire:jurisdiction.edit-section :jurisdiction-id="$jurisdictionId" wire:key="edit-section-form" />
@@ -19,7 +30,7 @@
     @else
         <div class="space-y-3 mt-4">
             @foreach($jurisdiction->sections->sortBy(fn($s) => $s->sectionTitle->sort_order) as $section)
-                <div class="p-4 border rounded shadow-sm bg-white dark:bg-zinc-700">
+                <div class="bg-white text-black dark:bg-zinc-700">
                     <div class="flex justify-between items-center">
                         <div class="flex-1">
                             <div class="flex items-center font-semibold text-gray-800 dark:text-gray-100 space-x-2">
@@ -44,7 +55,7 @@
                         @endif
                     </div>
 
-                    <div class="mt-2 text-gray-700 dark:text-gray-200">
+                    <div class="mt-2 text-black dark:text-gray-200">
                         @if($editingSectionId === $section->id)
                             {{-- Livewire EditSection Component --}}
                             <livewire:jurisdiction.edit-section
