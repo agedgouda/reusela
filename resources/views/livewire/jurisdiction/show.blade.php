@@ -1,4 +1,5 @@
 <div class="p-6 space-y-4">
+
         @if($editable)
         <a href="/jurisdictions" class="hover:text-blue-300 text-blue-800 mb-5"><- Back</a>
         @endif
@@ -25,9 +26,7 @@
     @endif
 
     {{-- No Sections --}}
-    @if($jurisdiction->sections->isEmpty())
-        <p class="text-gray-500 mt-2">No sections yet.</p>
-    @else
+    @if(!$jurisdiction->sections->isEmpty())
         <div class="space-y-3 mt-4">
             @foreach($jurisdiction->sections->sortBy(fn($s) => $s->sectionTitle->sort_order) as $section)
                 <div class="bg-white text-black dark:bg-zinc-700">
@@ -70,4 +69,5 @@
             @endforeach
         </div>
     @endif
+    <livewire:jurisdiction.shared-content />
 </div>
