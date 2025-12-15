@@ -10,7 +10,7 @@
             wire:click="switchTab('content')"
             class="px-4 py-2 border-b-2
                 {{ $tab === 'content' ? 'border-sky-600 font-bold' : 'border-transparent' }}">
-            Page Content
+            Statewide Laws
         </button>
     </div>
     @if($tab === 'list')
