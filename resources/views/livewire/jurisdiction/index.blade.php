@@ -1,5 +1,19 @@
 <div>
-
+    <div class="flex border-b mb-4">
+        <button
+            wire:click="switchTab('list')"
+            class="px-4 py-2 border-b-2
+                {{ $tab === 'list' ? 'border-sky-600 font-bold' : 'border-transparent' }}">
+            Jurisdictions
+        </button>
+        <button
+            wire:click="switchTab('content')"
+            class="px-4 py-2 border-b-2
+                {{ $tab === 'content' ? 'border-sky-600 font-bold' : 'border-transparent' }}">
+            Page Content
+        </button>
+    </div>
+    @if($tab === 'list')
     <!-- Filter input -->
     <div class="mb-4">
         <input type="text" class="border rounded p-2 w-96" placeholder="Filter by name..." wire:model.live="filter">
@@ -30,4 +44,13 @@
     <div class="mt-4">
         {{ $jurisdictions->links() }}
     </div>
+    @endif
+    @if($tab === 'content')
+    <div class="max-w-4xl">
+        <h2 class="text-lg font-bold mb-2">
+            Shared Jurisdiction Page Content
+        </h2>
+        <livewire:jurisdiction.shared-content-editor />
+    </div>
+    @endif
 </div>

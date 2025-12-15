@@ -15,6 +15,7 @@ class Index extends Component
     public string $sortField = 'name';  // Default sort field
     public string $sortDirection = 'asc';  // Default sort direction
     public string $filter = '';  // Search filter
+    public string $tab = 'list';
 
     protected $queryString = [
         'filter' => ['except' => ''],  // Keep filter between refreshes
@@ -47,8 +48,23 @@ class Index extends Component
             ->paginate(25);
     }
 
+    public function switchTab(string $tab)
+    {
+        $this->tab = $tab;
+    }
+
+    #[On('tabSwitched')]
+    public function handleTabSwitched(string $tab): void
+    {
+        $this->tab = $tab; // Sets $this->tab = 'list'
+    }
+
     public function render()
     {
+       if (session()->has('active_tab')) {
+            $this->tab = session('active_tab');
+        }
+
         $jurisdictions = $this->getFilteredJurisdictions();
 
         return view('livewire.jurisdiction.index', [
