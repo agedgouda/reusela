@@ -62,7 +62,7 @@
             </button>
         @else
             <button
-                wire:click="$dispatch('toggleEditSection', { sectionId: {{ $section->id }} })"
+                wire:click="cancel"
                 class="bg-gray-500 text-white px-3 py-1 rounded"
             >
                 Cancel

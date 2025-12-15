@@ -25,7 +25,27 @@
         <livewire:jurisdiction.edit-section :jurisdiction-id="$jurisdictionId" wire:key="edit-section-form" />
     @endif
 
-    {{-- No Sections --}}
+    <div class="bg-white text-black dark:bg-zinc-700">
+        <div class="flex justify-end">
+            @if($editable)
+                @if(!$showGeneralInfoEdit)
+                <button wire:click="toggleEdit('general')"
+                        class="text-blue-600 hover:underline text-sm">
+                    Edit
+                </button>
+                @else
+                <button wire:click="toggleEdit('general')"
+                        class="text-blue-600 hover:underline text-sm">
+                    Cancel
+                </button>
+                @endif
+            @endif
+        </div>
+        <div class="mt-2 text-black dark:text-gray-200">
+        {{ $jurisdiction->general_information }}
+        </div>
+    </div>
+
     @if(!$jurisdiction->sections->isEmpty())
         <div class="space-y-3 mt-4">
             @foreach($jurisdiction->sections->sortBy(fn($s) => $s->sectionTitle->sort_order) as $section)
@@ -40,17 +60,16 @@
 
                         @if($editable)
                             @if($editingSectionId != $section->id)
-                            <button wire:click="toggleEditSection({{ $section->id }})"
+                            <button wire:click="toggleEdit({{ $section->id }})"
                                     class="text-blue-600 hover:underline text-sm">
                                 Edit
                             </button>
                             @else
-                            <button wire:click="toggleEditSection({{ $section->id }})"
+                            <button wire:click="toggleEdit({{ $section->id }})"
                                     class="text-blue-600 hover:underline text-sm">
                                 Cancel
                             </button>
                             @endif
-
                         @endif
                     </div>
 

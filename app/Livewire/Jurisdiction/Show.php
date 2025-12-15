@@ -11,6 +11,7 @@ class Show extends Component
 
     public string $jurisdictionId;
     public bool $showAddSectionForm = false;
+    public bool $showGeneralInfoEdit = false;
     public bool $editable = true;
 
     /** @var int|null */
@@ -20,7 +21,7 @@ class Show extends Component
         'sectionAdded'     => 'refreshSections',
         'sectionUpdated'   => 'refreshSections',
         'cancelAddSection' => 'hideAddSectionForm',
-        'toggleEditSection'
+        'toggleEdit'
     ];
 
     public function mount(Jurisdiction $jurisdiction, ?bool $editable = null)
@@ -39,13 +40,15 @@ class Show extends Component
      *  UI ACTIONS
      * ----------------------------------------- */
 
-    public function toggleEditSection($sectionId)
+    public function toggleEdit($target): void
     {
-        // If clicking the same section, close. Otherwise open.
-        $this->editingSectionId =
-            ($this->editingSectionId === $sectionId) ? null : $sectionId;
+        if ($target === 'general') {
+            $this->showGeneralInfoEdit = ! $this->showGeneralInfoEdit;
+        } else {
+            // assume $target is a section ID
+            $this->editingSectionId = ($this->editingSectionId === $target) ? null : $target;
+        }
     }
-
     public function hideAddSectionForm()
     {
         $this->showAddSectionForm = false;

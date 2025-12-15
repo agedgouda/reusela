@@ -9,9 +9,11 @@ use App\Models\SectionTitle;
 class EditSection extends Component
 {
     public string $jurisdictionId;
-    public Section $section;
+    public Section|Jurisdiction $model;
     public ?string $newSectionTitleId = null;
     public ?string $newSectionText = null;
+    public string $field = 'text'; // field to edit
+    public ?string $newText = null;
 
     public $availableSectionTitles = [];
 
@@ -39,6 +41,11 @@ class EditSection extends Component
             ->get();
     }
 
+    public function cancel(): void
+    {
+         $this->closeEditor();
+    }
+
     public function save($addNew = false)
     {
         if ($this->section->exists) {
@@ -62,19 +69,14 @@ class EditSection extends Component
 
         $this->dispatch('sectionAdded');
 
-        if (!$addNew) {
-            if ($this->section->exists) {
-                $this->dispatch('toggleEditSection', ['sectionId' => $this->section->id]);
-            } else {
-                $this->dispatch('cancelAddSection');
-            }
+        if (! $addNew) {
+            $this->closeEditor();
         } else {
             // Reset form for next new section
             $this->section = new Section;
             $this->newSectionTitleId = null;
             $this->newSectionText = null;
 
-            // Reuse the mount logic to refresh the dropdown
             $this->mount($this->jurisdictionId);
         }
     }
@@ -85,5 +87,13 @@ class EditSection extends Component
         return view('livewire.jurisdiction.edit-section');
     }
 
+    protected function closeEditor(): void
+    {
+        if ($this->section->exists) {
+            $this->dispatch('toggleEdit', ['sectionId' => $this->section->id]);
+        } else {
+            $this->dispatch('cancelAddSection');
+        }
+}
 
 }
