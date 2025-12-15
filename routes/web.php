@@ -28,6 +28,7 @@ use App\Livewire\Search\Index as SearchIndex;
 // })->name('home');
 
 //Route::get('/search', SearchIndex::class)->name('search.index');
+
 Route::get('/', function () {
     return view('search-page'); // a Blade file you create
 })->name('search.index');
