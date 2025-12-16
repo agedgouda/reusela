@@ -26,6 +26,7 @@ class Jurisdiction extends Model
     protected $fillable = [
         'county_id',
         'name',
+        'general_information',
     ];
 
     /**

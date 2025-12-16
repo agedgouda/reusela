@@ -28,22 +28,22 @@
     <div class="bg-white text-black dark:bg-zinc-700">
         <div class="flex justify-end">
             @if($editable)
-                @if(!$showGeneralInfoEdit)
-                <button wire:click="toggleEdit('general')"
-                        class="text-blue-600 hover:underline text-sm">
-                    Edit
+                <button wire:click="toggleEdit('general')" class="text-blue-600 hover:underline text-sm">
+                    @if (!$showGeneralInfoEdit )
+                        Edit
+                    @else
+                        Cancel
+                    @endif
                 </button>
-                @else
-                <button wire:click="toggleEdit('general')"
-                        class="text-blue-600 hover:underline text-sm">
-                    Cancel
-                </button>
-                @endif
             @endif
         </div>
+        @if(!$showGeneralInfoEdit)
         <div class="mt-2 text-black dark:text-gray-200">
-        {{ $jurisdiction->general_information }}
+            {!! $jurisdiction->general_information !!}
         </div>
+        @else
+            <livewire:jurisdiction.edit :jurisdiction="$jurisdiction"/>
+        @endif
     </div>
 
     @if(!$jurisdiction->sections->isEmpty())

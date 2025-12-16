@@ -9,11 +9,9 @@ use App\Models\SectionTitle;
 class EditSection extends Component
 {
     public string $jurisdictionId;
-    public Section|Jurisdiction $model;
+    public Section $section;
     public ?string $newSectionTitleId = null;
     public ?string $newSectionText = null;
-    public string $field = 'text'; // field to edit
-    public ?string $newText = null;
 
     public $availableSectionTitles = [];
 
