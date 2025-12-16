@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 @import '../../vendor/livewire/flux/dist/flux.css';
 
-/* --- Configuration & Sources --- */
+/* --- 1. Sources --- */
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
@@ -9,7 +9,7 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* --- Theme Definition --- */
+/* --- 2. Theme Definition --- */
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
@@ -25,8 +25,9 @@
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
 
-    --color-accent: var(--color-neutral-800);
-    --color-accent-content: var(--color-neutral-800);
+    /* Global Accent (Keep as neutral for nav/sidebar consistency) */
+    --color-accent: var(--color-zinc-800);
+    --color-accent-content: var(--color-zinc-800);
     --color-accent-foreground: var(--color-white);
 }
 
@@ -38,21 +39,16 @@
     }
 }
 
-/* --- Global Base Styles --- */
+/* --- 3. Global Base Styles --- */
 @layer base {
-    /* List Resets */
     ul { @apply list-disc ml-5; }
     ol { @apply list-decimal ml-5; }
 
-    /* Border Resets */
     *, ::after, ::before, ::backdrop, ::file-selector-button {
         border-color: var(--color-zinc-200, currentColor);
     }
 
-    /* RICH TEXT CONTENT
-       This handles TinyMCE and Display views.
-       We target .prose as well to ensure Tailwind Typography compatibility.
-    */
+    /* RICH TEXT: Only target links inside content containers */
     .rich-text a,
     .prose a,
     .tox-tinymce-inline a {
@@ -60,7 +56,6 @@
         text-decoration: underline !important;
         text-underline-offset: 3px !important;
         text-decoration-thickness: 1px !important;
-        transition: color 0.2s;
     }
 
     .rich-text a:hover,
@@ -70,24 +65,46 @@
     }
 }
 
-/* --- Flux UI Overrides --- */
+/* --- 4. Flux UI Customizations --- */
 @layer base {
-    /* Form Layouts */
+    /* PRIMARY BUTTON BRANDING
+       This targets ONLY primary buttons and ignores nav/sidebar links.
+    */
+    [data-flux-button][data-variant="primary"] {
+        --color-accent: #2563eb; /* Blue-600 */
+        --color-accent-content: #ffffff;
+        background-color: var(--color-accent) !important;
+        color: var(--color-accent-content) !important;
+    }
+
+    [data-flux-button][data-variant="primary"]:hover {
+        --color-accent: #3b82f6; /* Blue-500 */
+        background-color: var(--color-accent) !important;
+    }
+
+    /* THE SHIELD: Prevent blue underlines on all buttons and nav links */
+    [data-flux-button],
+    [data-flux-button] a,
+    .flux-button,
+    [data-flux-nav-link],
+    [data-flux-sidebar-item] {
+        text-decoration: none !important;
+    }
+
+    /* Ensure Nav/Sidebar text stays its original color (Inherit from parent) */
+    [data-flux-nav-link],
+    [data-flux-sidebar-item] {
+        color: inherit !important;
+    }
+
+    /* Flux Form Field Layouts */
     [data-flux-field]:not(ui-radio, ui-checkbox) { @apply grid gap-2; }
     [data-flux-label] { @apply !mb-0 !leading-tight; }
 
-    /* Focus States */
     input:focus[data-flux-control],
     textarea:focus[data-flux-control],
     select:focus[data-flux-control] {
         @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
     }
-
-    /* SHIELD: Ensure Flux components never inherit the blue underline */
-    [data-flux-button] a,
-    [data-flux-button],
-    [data-flux-nav-link] {
-        text-decoration: none !important;
-        color: inherit !important;
-    }
 }
+

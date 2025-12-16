@@ -20,11 +20,20 @@ class SharedContentEditor extends Component
 
     public function save()
     {
-        SharedContent::updateOrCreate(['key' => 'jurisdiction.show'], ['content' => $this->content]);
-        $this->dispatch('content-saved', content: $this->content);
+        // 1. Update the database
+        SharedContent::updateOrCreate(
+            ['key' => 'jurisdiction.show'],
+            ['content' => $this->content]
+        );
 
+        // 2. Clear the specific cache key
+        cache()->forget('shared.jurisdiction.show');
+
+        // 3. Proceed with feedback
+        $this->dispatch('content-saved', content: $this->content);
         session()->flash('saved', true);
     }
+
     public function cancel()
     {
         session()->flash('active_tab', 'content');

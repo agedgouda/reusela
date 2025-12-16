@@ -1,21 +1,23 @@
-<div>
-    {{-- TRIX Editor --}}
-    <div wire:ignore>
-        <label class="block font-semibold mb-1">Text</label>
+<div class="rich-text"
+     x-data="setupTinyMCE('{{ $this->getId() }}', @entangle('content'))"
+     x-init="initTiny()">
 
-        {{-- Simple wire:model binding, Trix loads the initial content naturally --}}
-        <input
-            id="jurisdiction-content"
-            type="hidden"
-            wire:model="content"
-            value="{{ $content }}"
-        >
+    {{-- TinyMCE Inline Editor --}}
+    <div class="space-y-1">
+        <label class="block font-semibold mb-1 text-black dark:text-white">Text</label>
 
-        <trix-editor
-            input="jurisdiction-content"
-            class="border rounded w-full bg-white dark:bg-zinc-700"
-            style="min-height: 200px;"
-        ></trix-editor>
+        <div wire:ignore class="bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 overflow-hidden shadow-sm">
+            {{-- Toolbar area anchored to this specific component ID --}}
+            <div id="tiny-toolbar-{{ $this->getId() }}" class="bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700 min-h-[40px]"></div>
+
+            {{-- Editor area --}}
+            <div
+                x-ref="tinyditor"
+                class="p-4 min-h-[300px] focus:outline-none text-black dark:text-white prose dark:prose-invert max-w-none"
+            >
+                {!! $content !!}
+            </div>
+        </div>
 
         @error('content')
             <span class="text-red-600 text-sm">{{ $message }}</span>
@@ -23,7 +25,7 @@
     </div>
 
     <div class="flex justify-end space-x-2 mt-2">
-        <flux:button wire:click="save" variant="primary" class="bg-blue-600">
+        <flux:button wire:click="save" color="blue" variant="primary">
             Save
         </flux:button>
 
