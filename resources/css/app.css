@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import '../../vendor/livewire/flux/dist/flux.css';
 
+/* --- Configuration & Sources --- */
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
@@ -8,6 +9,7 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* --- Theme Definition --- */
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
@@ -36,41 +38,56 @@
     }
 }
 
+/* --- Global Base Styles --- */
 @layer base {
-    ul {
-        @apply list-disc ml-5;
+    /* List Resets */
+    ul { @apply list-disc ml-5; }
+    ol { @apply list-decimal ml-5; }
+
+    /* Border Resets */
+    *, ::after, ::before, ::backdrop, ::file-selector-button {
+        border-color: var(--color-zinc-200, currentColor);
     }
 
-    ol {
-        @apply list-decimal ml-5;
+    /* RICH TEXT CONTENT
+       This handles TinyMCE and Display views.
+       We target .prose as well to ensure Tailwind Typography compatibility.
+    */
+    .rich-text a,
+    .prose a,
+    .tox-tinymce-inline a {
+        color: #2563eb !important;
+        text-decoration: underline !important;
+        text-underline-offset: 3px !important;
+        text-decoration-thickness: 1px !important;
+        transition: color 0.2s;
     }
 
-    *,
-    ::after,
-    ::before,
-    ::backdrop,
-    ::file-selector-button {
-        border-color: var(--color-gray-200, currentColor);
+    .rich-text a:hover,
+    .prose a:hover {
+        color: #1d4ed8 !important;
+        text-decoration-thickness: 2px !important;
     }
 }
 
-[data-flux-field]:not(ui-radio, ui-checkbox) {
-    @apply grid gap-2;
+/* --- Flux UI Overrides --- */
+@layer base {
+    /* Form Layouts */
+    [data-flux-field]:not(ui-radio, ui-checkbox) { @apply grid gap-2; }
+    [data-flux-label] { @apply !mb-0 !leading-tight; }
+
+    /* Focus States */
+    input:focus[data-flux-control],
+    textarea:focus[data-flux-control],
+    select:focus[data-flux-control] {
+        @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
+    }
+
+    /* SHIELD: Ensure Flux components never inherit the blue underline */
+    [data-flux-button] a,
+    [data-flux-button],
+    [data-flux-nav-link] {
+        text-decoration: none !important;
+        color: inherit !important;
+    }
 }
-
-[data-flux-label] {
-    @apply  !mb-0 !leading-tight;
-}
-
-input:focus[data-flux-control],
-textarea:focus[data-flux-control],
-select:focus[data-flux-control] {
-    @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
-}
-
-/* \[:where(&)\]:size-4 {
-    @apply size-4;
-} */
-
-
-

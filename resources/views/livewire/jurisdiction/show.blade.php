@@ -38,9 +38,9 @@
             @endif
         </div>
         @if(!$showGeneralInfoEdit)
-        <div class="mt-2 text-black dark:text-gray-200">
-            {!! $jurisdiction->general_information !!}
-        </div>
+            <div class="rich-text prose max-w-none dark:prose-invert">
+                {!! $jurisdiction->general_information !!}
+            </div>
         @else
             <livewire:jurisdiction.edit :jurisdiction="$jurisdiction"/>
         @endif
@@ -73,7 +73,7 @@
                         @endif
                     </div>
 
-                    <div class="mt-2 text-black dark:text-gray-200">
+                    <div class="mt-2 text-black dark:text-gray-200 rich-text">
                         @if($editingSectionId === $section->id)
                             {{-- Livewire EditSection Component --}}
                             <livewire:jurisdiction.edit-section
