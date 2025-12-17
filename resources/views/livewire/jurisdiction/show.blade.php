@@ -6,18 +6,20 @@
         <div class="flex items-center">
 
             <h1 class="text-2xl font-bold">
+                You're in
                 @if($jurisdiction->name !== 'Unincorporated')
-                City of {{ $jurisdiction->name }}
+                the City of {{ $jurisdiction->name }}!
                 @else
-                {{ $jurisdiction->name }} LA County
+                {{ $jurisdiction->name }} LA County!
                 @endif
+
             </h1>
 
             {{-- Add Section Button --}}
             @if($editable && !$showAddSectionForm)
-            <x-primary-button wire:click="$toggle('showAddSectionForm')" class="ml-auto">
+            <flux:button color="blue" variant="primary" wire:click="$toggle('showAddSectionForm')" class="ml-auto">
                 Add Section
-            </x-primary-button>
+            </flux:button>
             @endif
         </div>
     {{-- Add Section Form --}}

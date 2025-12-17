@@ -23,13 +23,13 @@ use App\Livewire\User\Edit as UserEdit;
 
 use App\Livewire\Search\Index as SearchIndex;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// })->name('home');
+Route::get('/', function () {
+    return redirect('/login');
+});
 
 //Route::get('/search', SearchIndex::class)->name('search.index');
 
-Route::get('/', function () {
+Route::get('/search', function () {
     return view('search-page'); // a Blade file you create
 })->name('search.index');
 

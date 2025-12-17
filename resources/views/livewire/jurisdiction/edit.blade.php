@@ -16,7 +16,7 @@
     </div>
 
     <div class="flex justify-end space-x-2 mt-4">
-        <button wire:click="save" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">Save Changes</button>
-        <button wire:click="cancel" class="bg-zinc-200 text-zinc-700 px-4 py-2 rounded-lg text-sm">Cancel</button>
+        <flux:button wire:click="save" color="blue" variant="primary">Save Changes</flux:button>
+        <flux:button wire:click="cancel" class="bg-zinc-200 text-zinc-700 px-4 py-2 rounded-lg text-sm">Cancel</flux:button>
     </div>
 </div>

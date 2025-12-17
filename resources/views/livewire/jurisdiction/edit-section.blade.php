@@ -42,26 +42,22 @@
 
     {{-- Save / Cancel Buttons --}}
     <div class="flex justify-end space-x-2 mt-4">
-        <button wire:click="save(false)" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
+        <flux:button wire:click="save(false)" variant="primary" color="blue">
             Save
-        </button>
-
+        </flux:button>
         @unless($section->exists)
-            <button wire:click="save(true)" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
+            <flux:button wire:click="save(true)" variant="primary" color="green">
                 Save & Add New
-            </button>
+            </flux:button>
 
-            <button wire:click="$dispatch('cancelAddSection')"
-                    class="bg-zinc-500 hover:bg-zinc-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
+            <flux:button wire:click="$dispatch('cancelAddSection')">
                 Cancel
-            </button>
+            </flux:button>
         @else
-            <button
-                wire:click="cancel"
-                class="bg-zinc-500 hover:bg-zinc-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
-            >
+            <flux:button wire:click="cancel">
                 Cancel
-            </button>
+            </flux:button>
         @endunless
+
     </div>
 </div>

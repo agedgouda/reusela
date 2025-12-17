@@ -19,9 +19,9 @@
                 <!-- Display selected address and option to reset -->
                 <div class="w-full text-lg font-semibold mb-2">
                     <div class="flex justify-end">
-                        <x-primary-button onclick="location.reload();">
+                        <flux:button onclick="location.reload();" variant="primary" color="blue">
                             Change Address
-                        </x-primary-button>
+                        </flux:button>
                     </div>
 
                     <livewire:jurisdiction.show
