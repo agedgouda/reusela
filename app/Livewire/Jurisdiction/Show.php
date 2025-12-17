@@ -44,9 +44,11 @@ class Show extends Component
     {
         if ($target === 'general') {
             $this->showGeneralInfoEdit = ! $this->showGeneralInfoEdit;
+            $this->editingSectionId = false;
         } else {
             // assume $target is a section ID
             $this->editingSectionId = ($this->editingSectionId === $target) ? null : $target;
+            $this->showGeneralInfoEdit = false;
         }
     }
     public function hideAddSectionForm()

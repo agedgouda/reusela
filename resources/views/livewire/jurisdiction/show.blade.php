@@ -27,21 +27,36 @@
         <livewire:jurisdiction.edit-section :jurisdiction-id="$jurisdictionId" wire:key="edit-section-form" />
     @endif
 
-    <div class="bg-white text-black dark:bg-zinc-700">
-        <div class="flex justify-end">
-            @if($editable)
-                <button wire:click="toggleEdit('general')" class="text-blue-600 hover:underline text-sm">
-                    @if (!$showGeneralInfoEdit )
+    <div @class([
+                'rich-text prose max-w-none dark:prose-invert transition-all',
+                'border border-zinc-200 shadow-sm rounded-lg pt-3 px-3 pb-6 min-h-[20px]' => $editable,
+            ])>
+         @if($editable)
+        <div class="flex items-center justify-between w-full">
+            <div class="font-bold text-lg">
+                Jurisdiction Information
+            </div>
+
+            <div class="flex items-center gap-4">
+                @if (!$showGeneralInfoEdit)
+                    <button wire:click="toggleEdit('general')" class="text-blue-600 hover:underline text-sm">
                         Edit
-                    @else
+                    </button>
+                @else
+                    <button wire:click="toggleEdit('general')" class="text-blue-600 hover:underline text-sm">
                         Cancel
-                    @endif
-                </button>
-            @endif
+                    </button>
+                @endif
+            </div>
         </div>
+        @endif
         @if(!$showGeneralInfoEdit)
-            <div class="rich-text prose max-w-none dark:prose-invert">
-                {!! $jurisdiction->general_information !!}
+            <div>
+                @if($jurisdiction->general_information)
+                    {!! $jurisdiction->general_information !!}
+                @elseif(!$jurisdiction->general_information && $editable)
+                     <div class="text-gray-400 text-center">- No Jurisdiction Information Entered Yet -</div>
+                @endif
             </div>
         @else
             <livewire:jurisdiction.edit :jurisdiction="$jurisdiction"/>
@@ -51,7 +66,10 @@
     @if(!$jurisdiction->sections->isEmpty())
         <div class="space-y-3 mt-4">
             @foreach($jurisdiction->sections->sortBy(fn($s) => $s->sectionTitle->sort_order) as $section)
-                <div class="bg-white text-black dark:bg-zinc-700">
+                <div @class([
+                'rich-text prose max-w-none dark:prose-invert transition-all',
+                'border border-zinc-200 shadow-sm rounded-lg pt-3 px-3 pb-6 min-h-[20px]' => $editable,
+            ])>
                     <div class="flex justify-between items-center">
                         <div class="flex-1">
                             <div class="flex items-center font-semibold text-gray-800 dark:text-gray-100 space-x-2">
