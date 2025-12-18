@@ -1,3 +1,9 @@
+import addressAutocomplete from './addressAutocomplete';
+
+document.addEventListener('alpine:init', () => {
+    Alpine.data('addressAutocomplete', addressAutocomplete);
+});
+
 window.setupTinyMCE = function(componentId, entangleData) {
     return {
         content: entangleData,
