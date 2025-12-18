@@ -9,7 +9,7 @@
         <h1 class="text-2xl font-bold">
             You're in {{ $jurisdiction->name !== 'Unincorporated' ? "the City of $jurisdiction->name!" : "$jurisdiction->name LA County!" }}
         </h1>
-ss{{ $showAddSectionButton }}ss
+
         @if($editable && !$showAddSectionForm && $showAddSectionButton)
             <flux:button color="blue" variant="primary" wire:click="$toggle('showAddSectionForm')" class="ml-auto">
                 Add Section
