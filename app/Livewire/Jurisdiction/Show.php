@@ -35,7 +35,7 @@ class Show extends Component
         }
 
         if(\App\Models\SectionTitle::count() === $jurisdiction->sections->count() ) {
-            $showAddSectionButton = false;
+            $this->showAddSectionButton = false;
         }
 
         $this->loadSections();
