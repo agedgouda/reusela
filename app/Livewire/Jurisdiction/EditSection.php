@@ -29,14 +29,8 @@ class EditSection extends Component
             $this->newSectionText = $this->section->text;
         }
 
-        // Section titles NOT already used for this jurisdiction
-        $usedTitleIds = Section::where('jurisdiction_id', $jurisdictionId)
-            ->pluck('section_title_id')
-            ->toArray();
+       $this->refreshAvailableTitles();
 
-        $this->availableSectionTitles = SectionTitle::whereNotIn('id', $usedTitleIds)
-            ->orderBy('sort_order')
-            ->get();
     }
 
     public function cancel(): void
@@ -65,17 +59,21 @@ class EditSection extends Component
             ]);
         }
 
-        $this->dispatch('sectionAdded');
+        // Single unified event dispatch
+        $this->dispatch('section-added');
 
         if (! $addNew) {
             $this->closeEditor();
         } else {
-            // Reset form for next new section
+            // Reset local state for "Add New"
             $this->section = new Section;
             $this->newSectionTitleId = null;
-            $this->newSectionText = null;
+            $this->newSectionText = '';
 
-            $this->mount($this->jurisdictionId);
+            $this->resetErrorBag();
+
+            // Refresh the titles list so the one just used is removed
+            $this->refreshAvailableTitles();
         }
     }
 
@@ -92,6 +90,17 @@ class EditSection extends Component
         } else {
             $this->dispatch('cancelAddSection');
         }
-}
+    }
+
+    protected function refreshAvailableTitles()
+    {
+        $usedTitleIds = Section::where('jurisdiction_id', $this->jurisdictionId)
+            ->pluck('section_title_id')
+            ->toArray();
+
+        $this->availableSectionTitles = SectionTitle::whereNotIn('id', $usedTitleIds)
+            ->orderBy('sort_order')
+            ->get();
+    }
 
 }

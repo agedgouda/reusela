@@ -1,21 +1,25 @@
 <div class="mt-4 p-4 border rounded bg-white dark:bg-zinc-700 space-y-3 shadow-sm rich-text"
      x-data="setupTinyMCE('{{ $this->getId() }}', @entangle('newSectionText'))"
-     x-init="initTiny()">
+     x-init="initTiny()"
+     x-on:section-added.window="clearEditor()"> {{-- Fixed extra quote --}}
 
-    {{-- Section title dropdown only when adding a new section --}}
+    {{-- Section title dropdown --}}
     @if(!$section->exists)
-        <div wire:ignore>
-            <label class="block font-semibold mb-1 text-black dark:text-white">Section Title</label>
-            <select wire:model="newSectionTitleId" class="border rounded px-2 py-1 w-full bg-white dark:bg-zinc-800 text-black dark:text-white border-zinc-300 dark:border-zinc-600">
-                <option value="">-- Select Section Title --</option>
-                @foreach($availableSectionTitles as $title)
-                    <option value="{{ $title->id }}">{{ $title->title }}</option>
-                @endforeach
-            </select>
-            @error('newSectionTitleId')
-                <span class="text-red-600 text-sm">{{ $message }}</span>
-            @enderror
-        </div>
+    <div>
+        <label class="block font-semibold mb-1 text-black dark:text-white">Section Title</label>
+        {{-- Use wire:model.live if you want immediate validation, otherwise wire:model is fine --}}
+        <select wire:model="newSectionTitleId" class="border rounded px-2 py-1 w-full bg-white dark:bg-zinc-800 text-black dark:text-white border-zinc-300 dark:border-zinc-600">
+            <option value="">-- Select Section Title --</option>
+            @foreach($availableSectionTitles as $title)
+                <option value="{{ $title->id }}" wire:key="title-{{ $title->id }}">
+                    {{ $title->title }}
+                </option>
+            @endforeach
+        </select>
+        @error('newSectionTitleId')
+            <span class="text-red-600 text-sm">{{ $message }}</span>
+        @enderror
+    </div>
     @endif
 
     {{-- TinyMCE Inline Editor --}}
@@ -46,10 +50,11 @@
             Save
         </flux:button>
         @unless($section->exists)
+            @if($availableSectionTitles->count() > 1)
             <flux:button wire:click="save(true)" variant="primary" color="green">
                 Save & Add New
             </flux:button>
-
+            @endif
             <flux:button wire:click="$dispatch('cancelAddSection')">
                 Cancel
             </flux:button>
