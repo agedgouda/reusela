@@ -13,6 +13,7 @@ class Show extends Component
     public bool $showAddSectionForm = false;
     public bool $showGeneralInfoEdit = false;
     public bool $editable = true;
+    public bool $showAddSectionButton = true;
 
     /** @var int|null */
     public $editingSectionId = null;
@@ -31,6 +32,10 @@ class Show extends Component
 
         if (! is_null($editable)) {
             $this->editable = $editable;
+        }
+
+        if(\App\Models\SectionTitle::count() === $jurisdiction->sections->count() ) {
+            $showAddSectionButton = false;
         }
 
         $this->loadSections();
