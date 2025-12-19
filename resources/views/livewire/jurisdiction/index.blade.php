@@ -12,6 +12,12 @@
                 {{ $tab === 'content' ? 'border-sky-600 font-bold' : 'border-transparent' }}">
             Statewide Laws
         </button>
+        <button
+            wire:click="switchTab('default')"
+            class="px-4 py-2 border-b-2
+                {{ $tab === 'default' ? 'border-sky-600 font-bold' : 'border-transparent' }}">
+            Default Jurisdiction Information
+        </button>
     </div>
     @if($tab === 'list')
     <!-- Filter input -->
@@ -51,6 +57,12 @@
             Shared Jurisdiction Page Content
         </h2>
         <livewire:jurisdiction.shared-content-editor />
+    </div>
+    @endif
+
+    @if($tab === 'default')
+    <div class="max-w-4xl">
+        <livewire:jurisdiction.default-content/>
     </div>
     @endif
 </div>

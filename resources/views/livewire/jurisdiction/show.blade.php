@@ -20,18 +20,24 @@
     {{-- 3. Add Section Form --}}
     @if($showAddSectionForm)
         <div class="mb-4">
-            <livewire:jurisdiction.edit-section :jurisdiction-id="$jurisdictionId" wire:key="edit-section-form" />
+            <livewire:section.edit-section
+                :model="new \App\Models\Section"
+                :parent-model="$jurisdiction"
+                foreign-key="jurisdiction_id"
+                wire:key="add-section-form"
+            />
         </div>
     @endif
-
     {{-- 4. Jurisdiction General Information --}}
     <x-jurisdiction-card :editable="$editable">
         @if($editable)
             <div class="jurisdiction-card-header">
                 <div class="font-bold text-lg text-black dark:text-white">Jurisdiction Information</div>
-                <button wire:click="toggleEdit('general')" class="text-blue-600 hover:underline text-sm">
-                    {{ $showGeneralInfoEdit ? 'Cancel' : 'Edit' }}
-                </button>
+                @if(!$showGeneralInfoEdit )
+                <flux:button wire:click="toggleEdit('general')" color="blue" variant="primary" size="xs">
+                   Edit
+                </flux:button>
+                @endif
             </div>
         @endif
 
@@ -51,37 +57,18 @@
     {{-- 5. Dynamic Sections Loop --}}
     @if($jurisdiction->sections->isNotEmpty())
         <div class="space-y-3 mt-4">
-            @foreach($jurisdiction->sections->sortBy(fn($s) => $s->sectionTitle->sort_order) as $section)
-                <x-jurisdiction-card :editable="$editable" wire:key="section-card-{{ $section->id }}">
-
-                    <div class="jurisdiction-card-header">
-                        <div class="flex items-center font-semibold text-gray-800 dark:text-gray-100 space-x-2">
-                            @if ($section->sectionTitle->icon)
-                                <img class="h-8" src="/icons/{{ $section->sectionTitle->icon }}" alt="icon">
-                            @endif
-                            <span class="text-xl m-0">{{ $section->sectionTitle->title }}</span>
-                        </div>
-
-                        @if($editable)
-                            <button wire:click="toggleEdit({{ $section->id }})" class="text-blue-600 hover:underline text-sm">
-                                {{ $editingSectionId == $section->id ? 'Cancel' : 'Edit' }}
-                            </button>
-                        @endif
-                    </div>
-
-                    <div class="mt-2 text-black dark:text-gray-200">
-                        @if($editingSectionId !== $section->id)
-                            {!! $section->text !!}
-                        @else
-                            <livewire:jurisdiction.edit-section
-                                :section="$section"
-                                :jurisdiction-id="$jurisdictionId"
-                                wire:key="edit-section-{{ $section->id }}" />
-                        @endif
-                    </div>
-                </x-jurisdiction-card>
-            @endforeach
+        @foreach($jurisdiction->sections->sortBy(fn($s) => $s->sectionTitle->sort_order) as $section)
+            <x-section-display
+                :model="$section"
+                :editable="$editable"
+                :editing-id="$editingSectionId"
+                :parent="$jurisdiction"
+                wire:key="section-wrapper-{{ $section->id }}-{{ $editingSectionId }}"
+            />
+        @endforeach
         </div>
+    @else
+        <livewire:jurisdiction.default-content/>
     @endif
 
     {{-- 6. Shared Content --}}

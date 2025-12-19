@@ -3,17 +3,26 @@
 namespace App\Livewire\Jurisdiction;
 
 use Livewire\Component;
+use App\Livewire\Concerns\HandlesSectionDeletions;
 use App\Models\Jurisdiction;
+use App\Models\SectionTitle;
+use App\Models\Section;
+use Illuminate\Support\Collection;
 
 class Show extends Component
 {
-    public Jurisdiction $jurisdiction;
+    use HandlesSectionDeletions;
 
+    public Jurisdiction $jurisdiction;
     public string $jurisdictionId;
     public bool $showAddSectionForm = false;
     public bool $showGeneralInfoEdit = false;
     public bool $editable = true;
     public bool $showAddSectionButton = true;
+    public Collection $defaultSections;
+
+    // Default tab state
+    public string $tab = 'list';
 
     /** @var int|null */
     public $editingSectionId = null;
@@ -34,56 +43,64 @@ class Show extends Component
             $this->editable = $editable;
         }
 
-        if(\App\Models\SectionTitle::count() === $jurisdiction->sections->count() ) {
-            $this->showAddSectionButton = false;
-        }
-
+        $this->updateButtonVisibility();
         $this->loadSections();
     }
 
-    /** ------------------------------------------
-     *  UI ACTIONS
-     * ----------------------------------------- */
+    /**
+     * This method is called automatically by Livewire
+     * when the 'tab' property is updated via wire:model.
+     */
+    public function updatedTab($value)
+    {
+        // Reset editing states when switching tabs to prevent UI bugs
+        $this->showAddSectionForm = false;
+        $this->editingSectionId = null;
+    }
+
+    public function deleteSection($id)
+    {
+        $this->performDelete($id, Section::class, 'Section');
+    }
 
     public function toggleEdit($target): void
     {
         if ($target === 'general') {
-            $this->showGeneralInfoEdit = ! $this->showGeneralInfoEdit;
-            $this->editingSectionId = false;
+            $this->showGeneralInfoEdit = !$this->showGeneralInfoEdit;
+            $this->editingSectionId = null;
         } else {
-            // assume $target is a section ID
-            $this->editingSectionId = ($this->editingSectionId === $target) ? null : $target;
+            $this->editingSectionId = ($this->editingSectionId == $target) ? null : $target;
             $this->showGeneralInfoEdit = false;
         }
     }
+
     public function hideAddSectionForm()
     {
         $this->showAddSectionForm = false;
+        $this->editingSectionId = null;
     }
-
-    /** ------------------------------------------
-     *  DATA LOADING
-     * ----------------------------------------- */
 
     private function loadSections()
     {
-        // Eager load everything needed for the view
         $this->jurisdiction->load('sections.sectionTitle');
     }
 
-    public function refreshSections()
+    public function refreshSections($keepAdding = false)
     {
+        $this->editingSectionId = null;
+        $this->showAddSectionForm = $keepAdding;
+
         $this->loadSections();
+        $this->updateButtonVisibility();
     }
 
-    /** ------------------------------------------
-     *  RENDER
-     * ----------------------------------------- */
+    private function updateButtonVisibility()
+    {
+        $this->showAddSectionButton = SectionTitle::count() !== $this->jurisdiction->sections->count();
+    }
 
     public function render()
     {
-        return view('livewire.jurisdiction.show', [
-            'jurisdiction' => $this->jurisdiction,
-        ]);
+        return view('livewire.jurisdiction.show');
     }
 }
