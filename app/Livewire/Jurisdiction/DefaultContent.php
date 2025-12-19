@@ -4,16 +4,19 @@ namespace App\Livewire\Jurisdiction;
 
 use Livewire\Component;
 use App\Models\DefaultSection;
+use App\Models\SectionTitle;
+use App\Livewire\Concerns\LoadsSections;
 use App\Livewire\Concerns\HandlesSectionDeletions;
+use App\Livewire\Concerns\ManagesSectionUI;
 use Illuminate\Support\Collection;
 
 class DefaultContent extends Component
 {
-    use HandlesSectionDeletions;
+    use LoadsSections, HandlesSectionDeletions, ManagesSectionUI;
 
-    public Collection $defaultSections;
     public $editingSectionId = null;
     public bool $showAddSectionForm = false;
+    public bool $editable = true;
 
     protected $listeners = [
         'sectionAdded' => 'refreshSections',
@@ -24,14 +27,12 @@ class DefaultContent extends Component
 
     public function mount()
     {
-        $this->loadSections();
+        $this->refreshSections();
     }
 
-    public function loadSections()
+    public function refreshSections($keepAdding = false)
     {
-        $this->defaultSections = DefaultSection::with('sectionTitle')
-            ->get()
-            ->sortBy(fn($d) => $d->sectionTitle->sort_order);
+        $this->traitRefreshSections(\App\Models\DefaultSection::class,null,'',$keepAdding);
     }
 
     public function deleteSection($id)
@@ -39,27 +40,10 @@ class DefaultContent extends Component
         $this->performDelete($id, DefaultSection::class, 'Default Section');
     }
 
-    public function toggleEdit($target): void
-    {
-        $this->editingSectionId = ($this->editingSectionId == $target) ? null : $target;
-        $this->showAddSectionForm = false;
-    }
-
-    public function hideAddSectionForm()
-    {
-        $this->showAddSectionForm = false;
-        $this->editingSectionId = null;
-    }
-
-    public function refreshSections($keepAdding = false)
-    {
-        $this->editingSectionId = null;
-        $this->showAddSectionForm = $keepAdding;
-        $this->loadSections();
-    }
-
     public function render()
     {
-        return view('livewire.jurisdiction.default-content');
+        return view('livewire.jurisdiction.default-content', [
+            'defaultSections' => $this->sections
+        ]);
     }
 }

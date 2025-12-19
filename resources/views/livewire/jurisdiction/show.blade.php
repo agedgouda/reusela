@@ -68,7 +68,7 @@
         @endforeach
         </div>
     @else
-        <livewire:jurisdiction.default-content/>
+        <livewire:jurisdiction.default-content :editable="$editable"/>
     @endif
 
     {{-- 6. Shared Content --}}

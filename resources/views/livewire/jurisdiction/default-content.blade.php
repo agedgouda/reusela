@@ -3,7 +3,7 @@
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">Default City Information</h2>
 
-        @if(!$showAddSectionForm)
+        @if($editable && !$showAddSectionForm && $showAddSectionButton)
             <flux:button wire:click="$set('showAddSectionForm', true)" variant="primary"  color="blue">
                 Add Section
             </flux:button>

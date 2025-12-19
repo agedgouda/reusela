@@ -61,8 +61,17 @@ class Index extends Component
 
     public function render()
     {
-       if (session()->has('active_tab')) {
+       // 1. Check for the flash data set by the 'Cancel' button on the previous request.
+        if (session()->has('active_tab')) {
             $this->tab = session('active_tab');
+            // This sets $this->tab to 'content' after the refresh.
+            // Laravel consumes the flash data automatically after reading it.
+        }
+
+        // 2. Fallback: Check the URL query parameter for the initial load
+        // (This is how the tab was originally set to 'content' or 'list' on navigation)
+        elseif (request()->query('tab')) {
+            $this->tab = request()->query('tab');
         }
 
         $jurisdictions = $this->getFilteredJurisdictions();
