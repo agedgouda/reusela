@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('default_sections', function (Blueprint $table) {$table->id();
-            $table->foreignId('section_title_id')->constrained()->cascadeOnDelete();
-            $table->longText('text');
-            $table->timestamps();
+        Schema::table('jurisdictions', function (Blueprint $table) {
+            Schema::table('jurisdictions', function (Blueprint $table) {
+                $table->boolean('is_system_default')->default(false);
+            });
         });
     }
 
@@ -23,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('default_sections');
+        Schema::table('jurisdictions', function (Blueprint $table) {
+            //
+        });
     }
 };

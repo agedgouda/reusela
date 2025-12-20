@@ -56,7 +56,15 @@ class Index extends Component
     #[On('tabSwitched')]
     public function handleTabSwitched(string $tab): void
     {
-        $this->tab = $tab; // Sets $this->tab = 'list'
+        $this->tab = $tab;
+    }
+
+    public function getDefaultJurisdictionProperty()
+    {
+        // Use the method we added to the Model to bypass the Global Scope
+        return \App\Models\Jurisdiction::withoutGlobalScope('excludeDefault')
+            ->where('is_system_default', true)
+            ->first();
     }
 
     public function render()
@@ -64,12 +72,8 @@ class Index extends Component
        // 1. Check for the flash data set by the 'Cancel' button on the previous request.
         if (session()->has('active_tab')) {
             $this->tab = session('active_tab');
-            // This sets $this->tab to 'content' after the refresh.
-            // Laravel consumes the flash data automatically after reading it.
         }
 
-        // 2. Fallback: Check the URL query parameter for the initial load
-        // (This is how the tab was originally set to 'content' or 'list' on navigation)
         elseif (request()->query('tab')) {
             $this->tab = request()->query('tab');
         }

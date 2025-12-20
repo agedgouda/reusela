@@ -2,19 +2,19 @@
     <div class="flex border-b mb-4">
         <button
             wire:click="switchTab('list')"
-            class="px-4 py-2 border-b-2
+            class="px-4 py-2 border-b-2 cursor-pointer
                 {{ $tab === 'list' ? 'border-sky-600 font-bold' : 'border-transparent' }}">
             Jurisdictions
         </button>
         <button
             wire:click="switchTab('content')"
-            class="px-4 py-2 border-b-2
+            class="px-4 py-2 border-b-2 cursor-pointer
                 {{ $tab === 'content' ? 'border-sky-600 font-bold' : 'border-transparent' }}">
             Statewide Laws
         </button>
         <button
             wire:click="switchTab('default')"
-            class="px-4 py-2 border-b-2
+            class="px-4 py-2 border-b-2 cursor-pointer
                 {{ $tab === 'default' ? 'border-sky-600 font-bold' : 'border-transparent' }}">
             Default Jurisdiction Information
         </button>
@@ -62,7 +62,11 @@
 
     @if($tab === 'default')
     <div class="max-w-4xl">
-        <livewire:jurisdiction.default-content/>
+        <livewire:jurisdiction.show
+                :jurisdiction="$this->defaultJurisdiction"
+                :editable="true"
+                wire:key="default-template-editor"
+            />
     </div>
     @endif
 </div>

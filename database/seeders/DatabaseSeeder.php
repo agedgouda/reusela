@@ -23,7 +23,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             //CountiesTableSeeder::class,
             //JurisdictionsTableSeeder::class,
-            SectionTitleTableSeeder::class,
+            //SectionTitleTableSeeder::class,
+            DefaultJurisdictionSeeder::class,
         ]);
     }
 }
