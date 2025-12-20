@@ -36,16 +36,20 @@
 
     {{-- 4. Jurisdiction General Information Card --}}
     <x-jurisdiction-card :editable="$editable">
-        @php
-            // Logic: Only show the "Edit" header/button if local info exists.
-            // If general_information is null/empty, we are viewing the default and shouldn't edit.
-            $hasLocalInfo = !empty($jurisdiction->general_information);
-            $canEditInfo = $editable && ($hasLocalInfo || $jurisdiction->is_system_default);
-        @endphp
-
-        @if($canEditInfo)
+        {{--
+            Logic: If the user has 'editable' permissions, always show the Edit button.
+            This allows them to "Override" the default by saving local info.
+        --}}
+        @if($editable)
             <div class="jurisdiction-card-header flex justify-between items-center">
-                <div class="font-bold text-lg text-black dark:text-white">Jurisdiction Information</div>
+                <div class="font-bold text-lg text-black dark:text-white">
+                    Jurisdiction Information
+                    {{-- Subtle hint that they are currently seeing the fallback --}}
+                    @if(empty($jurisdiction->general_information) && !$jurisdiction->is_system_default)
+                        <span class="text-xs text-gray-400 font-normal italic ml-2">(Default Template)</span>
+                    @endif
+                </div>
+
                 @if(!$showGeneralInfoEdit)
                     <flux:button wire:click="toggleEdit('general')" color="blue" variant="primary" size="xs">
                         Edit
@@ -57,12 +61,16 @@
         <div class="mt-2">
             @if(!$showGeneralInfoEdit)
                 <div class="rich-text prose max-w-none dark:prose-invert">
-                    {{-- Accessor handles local vs default waterfall --}}
+                    {{-- Always show the best available info (Local or Default) --}}
                     {!! $jurisdiction->display_general_info !!}
                 </div>
             @else
-                {{-- This only triggers if $canEditInfo was true --}}
-                <livewire:jurisdiction.edit :jurisdiction="$jurisdiction" wire:key="general-edit-form" />
+                {{--
+                    IMPORTANT: We pass the CURRENT jurisdiction.
+                    If it's empty, the editor will open blank or with a placeholder,
+                    and saving will write directly to THIS jurisdiction's database row.
+                --}}
+                <livewire:jurisdiction.edit :jurisdiction="$jurisdiction" wire:key="general-edit-form-{{ $jurisdiction->id }}" />
             @endif
         </div>
     </x-jurisdiction-card>
