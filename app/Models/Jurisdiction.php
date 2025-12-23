@@ -35,27 +35,17 @@ class Jurisdiction extends Model
      */
     protected static function booted()
     {
-        // 1. Automatically hide the System Default from all searches/lists
         static::addGlobalScope('excludeDefault', function (Builder $builder) {
             $builder->where('is_system_default', false);
         });
 
-        // 2. Clear caches whenever ANY record is updated
         static::saved(function ($jurisdiction) {
-            // Clear the specific search cache for THIS city name
-            Cache::forget("jurisdiction_model_{$jurisdiction->name}");
-
-            // If this is the Master record, clear the global fallback caches
-            if ($jurisdiction->is_system_default) {
-                Cache::forget('jurisdiction_master_record');
-                Cache::forget('master_general_info');
-                Cache::forget('master_sections_collection');
-            }
+            // This clears EVERYTHING tagged 'jurisdictions' instantly
+            Cache::tags(['jurisdictions'])->flush();
         });
 
-        // 3. Clear cache on delete to prevent "Ghost" results
         static::deleted(function ($jurisdiction) {
-            Cache::forget("jurisdiction_model_{$jurisdiction->name}");
+            Cache::tags(['jurisdictions'])->flush();
         });
     }
 
@@ -86,7 +76,7 @@ class Jurisdiction extends Model
      */
     public function getDefaultRecord()
     {
-        return Cache::rememberForever('jurisdiction_master_record', function() {
+        return Cache::tags(['jurisdictions'])->rememberForever('jurisdiction_master_record', function() {
             return self::withoutGlobalScope('excludeDefault')
                 ->where('is_system_default', true)
                 ->first();

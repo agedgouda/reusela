@@ -32,42 +32,47 @@ class Index extends Component
                 $address['location'], $address['locality'], $address['state'], $address['postal_code']
             );
 
-            // 1. Create a unique cache key based on the formatted address
-            $cacheKey = 'civic_jurisdiction_' . Str::slug($formattedAddress);
+            $cacheKey = 'civic_lookup_' . Str::slug($formattedAddress);
 
-            // 2. Wrap the logic in Cache::remember
-            $cachedData = Cache::remember($cacheKey, now()->addDays(7), function () use ($formattedAddress, $address) {
+            /**
+             * We use Cache::tags(['jurisdictions']) so that this entire result
+             * can be cleared whenever a Jurisdiction model is updated.
+             */
+            $data = Cache::tags(['jurisdictions'])->remember($cacheKey, now()->addDays(7), function () use ($formattedAddress, $address) {
                 $response = Http::get('https://www.googleapis.com/civicinfo/v2/divisionsByAddress', [
                     'address' => $formattedAddress,
                     'key' => config('services.google_maps.api_key'),
                 ]);
 
                 if ($response->successful()) {
-                    $data = $response->json();
-                    $hasPlace = collect(array_keys($data['divisions'] ?? []))
+                    $civicData = $response->json();
+                    $hasPlace = collect(array_keys($civicData['divisions'] ?? []))
                         ->contains(fn($k) => str_contains($k, 'place'));
 
                     $city = $hasPlace ? $address['locality'] : 'Unincorporated';
 
+                    // We fetch the model inside the cache closure so the
+                    // entire object is stored in Redis.
+                    $model = Jurisdiction::where('name', $city)->first();
+
                     return [
                         'city' => $city,
                         'address_label' => $hasPlace ? "City of {$city}" : "Unincorporated LA County",
+                        'jurisdiction' => $model
                     ];
                 }
                 return null;
             });
 
-            if ($cachedData) {
-                $this->city = $cachedData['city'];
-                $this->address = $cachedData['address_label'];
-
-                // 3. Cache the DB lookup for the Jurisdiction model specifically
-                $this->jurisdiction = Cache::remember("jurisdiction_model_{$this->city}", now()->addDay(), function () {
-                    return Jurisdiction::where('name', $this->city)->first();
-                });
+            if ($data) {
+                $this->city = $data['city'];
+                $this->address = $data['address_label'];
+                $this->jurisdiction = $data['jurisdiction'];
             }
 
         } catch (\Exception $e) {
+            // Log the error for debugging on Forge
+            logger()->error('Search Error: ' . $e->getMessage());
             $this->dispatch('error-processing');
         }
 
