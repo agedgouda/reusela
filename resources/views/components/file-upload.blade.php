@@ -44,7 +44,7 @@
         @if($currentFile)
             <div x-show="!preview" class="mt-3">
                 <p class="text-sm text-gray-600 mb-1">Current File:</p>
-                <img src="/icons/{{ $currentFile }}" class="h-20 w-20 object-contain rounded border mx-auto">
+                <img src="{{ Storage::url('icons/' . $currentFile) }}" class="h-20 w-20 object-contain rounded border mx-auto">
             </div>
         @endif
 
