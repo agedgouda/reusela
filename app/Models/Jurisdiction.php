@@ -40,13 +40,22 @@ class Jurisdiction extends Model
             $builder->where('is_system_default', false);
         });
 
-        // 2. Clear caches whenever the Master record is updated
+        // 2. Clear caches whenever ANY record is updated
         static::saved(function ($jurisdiction) {
+            // Clear the specific search cache for THIS city name
+            Cache::forget("jurisdiction_model_{$jurisdiction->name}");
+
+            // If this is the Master record, clear the global fallback caches
             if ($jurisdiction->is_system_default) {
                 Cache::forget('jurisdiction_master_record');
                 Cache::forget('master_general_info');
                 Cache::forget('master_sections_collection');
             }
+        });
+
+        // 3. Clear cache on delete to prevent "Ghost" results
+        static::deleted(function ($jurisdiction) {
+            Cache::forget("jurisdiction_model_{$jurisdiction->name}");
         });
     }
 
