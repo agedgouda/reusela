@@ -15,7 +15,7 @@
     <div class="jurisdiction-card-header">
         <div class="flex items-center font-semibold text-gray-800 dark:text-gray-100 space-x-2">
             @if ($title->icon)
-                <img class="h-8" src="/icons/{{ Storage::url('icons/' . $title->icon) }}" alt="icon">
+                <img class="h-8" src="{{ Storage::url('icons/' . $title->icon) }}" alt="icon">
             @endif
             <span class="text-xl m-0">{{ $title->title }}</span>
         </div>
