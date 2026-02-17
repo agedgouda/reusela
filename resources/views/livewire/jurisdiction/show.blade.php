@@ -1,19 +1,21 @@
 <div class="bg-white">
-    <div class="px-6 lg:px-12 py-12 space-y-10">
+    <div class="px-6 lg:px-12 space-y-10">
 
         {{-- 1. Navigation --}}
         @if($editable)
-            <a href="/jurisdictions"
-               class="inline-flex items-center text-[14px] font-medium text-[#00BEB2] hover:opacity-80 transition">
-                ← Back
-            </a>
+            <button wire:click="goBack"
+               class="bg-[#9adbe8] rounded-[100px] px-[18px] py-[9px] flex flex-row gap-[10px] items-center text-[16px]/[20px] font-bold tracking-[-0.02em]">
+                <img class="h-[20px]" src="/images/arrow-10.svg" /> Back
+            </button>
+            @else
+            <button @click="resetUI" class="bg-[#9adbe8] rounded-[100px] px-[18px] py-[9px] flex flex-row gap-[10px] items-center text-[16px]/[20px] font-bold tracking-[-0.02em]">
+                <img class="h-[20px]" src="/images/arrow-10.svg" />Change Address
+            </button>
         @endif
-
-
         {{-- 2. Header --}}
         <div class="flex flex-col sm:flex-row sm:items-center gap-4">
 
-            <div class="jurisdiction-name">
+            <div class="text-[#15121b] text-left font-sans text-[40px]/[36px] tracking-[-0.05em] font-bold">
                 @if($jurisdiction->is_system_default)
                     Default Information
                 @else
@@ -52,12 +54,11 @@
 
 
         {{-- 4. Jurisdiction General Information Card --}}
-        <x-jurisdiction-card :editable="$editable" class="bg-[#e4fbff] rounded-[20px] p-[72px] flex flex-col gap-[36px] items-start justify-start">
+        <x-jurisdiction-card :editable="$editable" >
 
-            @if($editable)
                 <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
 
-                    <div class="jurisdiction-information">
+                    <div class="text-[#15121b] text-left font-sans text-[32px]/[36px] tracking-[-0.05em] font-bold">
                         Jurisdiction Information
 
                         @if(empty($jurisdiction->general_information) && !$jurisdiction->is_system_default)
@@ -67,7 +68,7 @@
                         @endif
                     </div>
 
-                    @if(!$showGeneralInfoEdit)
+                    @if(!$showGeneralInfoEdit  && $editable)
                         <flux:button
                             wire:click="toggleEdit('general')"
                             color="blue"
@@ -78,7 +79,6 @@
                         </flux:button>
                     @endif
                 </div>
-            @endif
 
 
             <div class="mt-4">
@@ -125,9 +125,7 @@
 
 
         {{-- 6. Shared Content --}}
-        <div class="pt-10 border-t border-gray-200">
-            <livewire:jurisdiction.shared-content contentKey="jurisdiction.show" />
-        </div>
+        <livewire:jurisdiction.shared-content contentKey="jurisdiction.show" />
 
     </div>
 </div>

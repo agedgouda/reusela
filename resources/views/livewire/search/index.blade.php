@@ -41,9 +41,6 @@
                 {{-- THE RESULTS (Only show when loading is totally finished) --}}
                 <div x-show="!loading && !@js($isProcessing)" x-transition.opacity.duration.500ms>
                     @if($jurisdiction)
-                        <div class="flex justify-end mb-4">
-                            <flux:button @click="resetUI" variant="primary" color="blue">Change Address</flux:button>
-                        </div>
                         <livewire:jurisdiction.show :jurisdiction="$jurisdiction" :editable="false" :wire:key="'jur-'.$jurisdiction->id" />
                     @elseif($address)
                         <div class="p-10 text-center bg-gray-50 rounded-lg border border-dashed border-gray-300">

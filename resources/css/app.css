@@ -49,7 +49,8 @@
     .rich-text a,
     .prose a,
     .tox-tinymce-inline a {
-        color: #2563eb !important;
+        color: #008179 !important;
+        font-weight: 600 !important;
         text-decoration: underline !important;
         text-underline-offset: 3px !important;
         text-decoration-thickness: 1px !important;
@@ -57,7 +58,8 @@
 
     .rich-text a:hover,
     .prose a:hover {
-        color: #1d4ed8 !important;
+        color: #008179 !important;
+        font-weight: 700 !important;
         text-decoration-thickness: 2px !important;
     }
 }
@@ -107,7 +109,7 @@
 @layer base {
     /* Only layout and behavior here */
     .jurisdiction-card {
-        @apply transition-all;
+        @apply transition-all ;
     }
 
     .jurisdiction-card-editable {
@@ -115,56 +117,10 @@
     }
 
     .jurisdiction-card-header {
-        @apply flex items-center justify-between w-full mb-2;
+        @apply flex items-center justify-between w-full mb-[36px];
     }
 }
 
-.jurisdiction-information {
-  color: #15121b;
-  text-align: left;
-  font-family: "SofiaPro-Bold", sans-serif;
-  font-size: 32px;
-  line-height: 36px;
-  letter-spacing: -0.05em;
-  font-weight: 700;
-}
-
-.jurisdiction-name {
-  color: #15121b;
-  text-align: left;
-  font-family: "SofiaPro-Bold", sans-serif; /* Typekit already loaded */
-  font-size: 40px;
-  line-height: 36px;
-  letter-spacing: -0.05em;
-  font-weight: 700;
-}
-
-.at-a-glance-what-this-means-for-your-business {
-  font-size: 28px;
-  line-height: 36px;
-  letter-spacing: -0.05em;
-  font-weight: 700;
-  position: relative;
-  flex: 1;
-}
-
-.single-use-foodware-accessories-utensils-straws-stirrers-etc {
-  font-size: 28px;
-  line-height: 36px;
-  letter-spacing: -0.05em;
-  font-weight: 700;
-  position: relative;
-  flex: 1;
-}
-
-
-.statewide-laws-you-should-know-about {
-  font-family: "SofiaPro", sans-serif;
-  font-size: 48px;
-  line-height: 36px;
-  letter-spacing: -0.05em;
-  font-weight: 700;
-}
 
 
 [x-cloak] {

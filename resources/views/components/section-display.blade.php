@@ -17,11 +17,11 @@
     wire:key="card-{{ $model->id }}-{{ $isEditing ? 'edit' : 'view' }}"
 >
     <div class="jurisdiction-card-header">
-        <div class="flex items-center font-semibold text-gray-800 dark:text-gray-100 space-x-2">
+        <div class="flex flex-row gap-[18px] items-center justify-center self-stretch shrink-0 h-[36px]">
             @if ($title->icon)
                 <img class="h-8" src="{{ Storage::url('icons/' . $title->icon) }}" alt="icon">
             @endif
-            <span class="text-xl m-0">{{ $title->title }}</span>
+            <span class="text-[28px] leading-[36px] tracking-[-0.05em] font-bold flex-1">{{ $title->title }}</span>
         </div>
 
         @if($editable && !$isEditing)
