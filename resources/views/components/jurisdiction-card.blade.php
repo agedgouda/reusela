@@ -6,16 +6,10 @@
     $bgColor = $variant === 'violation'
         ? 'bg-[#9adbe8] border-[#9adbe8]'
         : 'bg-[#e4fbff] border-[#e4fbff]';
-
-    $leftBorder = $editable
-        ? ($variant === 'violation'
-            ? 'border-l-4 border-l-[#9adbe8]'
-            : 'border-l-4 border-l-[#e4fbff]')
-        : '';
 @endphp
 
 <div {{ $attributes->merge([
-    'class' => "jurisdiction-card $bgColor border rounded-[12px] p-8 text-[16px] leading-[24px] text-[#1E1E1E] prose max-w-none dark:prose-invert $leftBorder rounded-[20px] p-[72px] flex flex-col gap-[36px] items-start justify-start"
+    'class' => "$bgColor border rounded-[12px] p-8 text-[16px] leading-[24px] text-[#1E1E1E] prose max-w-none dark:prose-invert rounded-[20px] p-[72px] flex flex-col gap-[36px] items-start justify-start"
 ]) }}
 x-data="{ expanded: false }"
 x-init="expanded = true"

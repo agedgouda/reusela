@@ -116,7 +116,7 @@
     }
 
     .jurisdiction-card-header {
-        @apply flex items-center justify-between w-full mb-[36px];
+        @apply w-full mb-[36px];
     }
 }
 

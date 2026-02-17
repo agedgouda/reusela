@@ -81,7 +81,8 @@
                             color="blue"
                             variant="primary"
                             size="xs"
-                            class="!rounded-[12px] !bg-[#9adbe8] !text-[#15121b] hover:!bg-[#89c6d3] ">
+                            class="!rounded-[12px] !bg-[#9adbe8] !text-[#15121b] hover:!bg-[#89c6d3] "
+                        >
                             Edit
                         </flux:button>
                     @endif

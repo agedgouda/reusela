@@ -15,18 +15,30 @@
     :editable="$editable"
     :variant="$title->title === 'Report a Violation' ? 'violation' : 'default'"
     wire:key="card-{{ $model->id }}-{{ $isEditing ? 'edit' : 'view' }}"
+    class="w-full !items-stretch"
 >
-    <div class="jurisdiction-card-header">
-        <div class="flex flex-row gap-[18px] items-center justify-center self-stretch shrink-0 h-[36px]">
+    {{-- Header Section: Flex wrapper with justify-between pushes items to opposite ends --}}
+    <div class="w-full mb-[36px] flex items-center justify-between">
+
+        {{-- Left Section: Icon and Title --}}
+        <div class="flex flex-row gap-[18px] items-center h-[36px]">
             @if ($title->icon)
-                <img class="h-8" src="{{ Storage::url('icons/' . $title->icon) }}" alt="icon">
+                <img class="h-8 w-auto" src="{{ Storage::url('icons/' . $title->icon) }}" alt="icon">
             @endif
-            <span class="text-[28px] leading-[36px] tracking-[-0.05em] font-bold flex-1">{{ $title->title }}</span>
+            <span class="text-[28px] leading-[36px] tracking-[-0.05em] font-bold">
+                {{ $title->title }}
+            </span>
         </div>
 
+        {{-- Right Section: Buttons --}}
         @if($editable && !$isEditing)
-            <div class="flex items-center space-x-2">
-                <flux:button wire:click="toggleEdit({{ $model->id }})" color="blue" variant="primary" size="xs" class="!bg-[#9adbe8] !text-[#15121b] hover:!bg-[#89c6d3] ">
+            <div class="flex items-center gap-2 shrink-0">
+                <flux:button
+                    wire:click="toggleEdit({{ $model->id }})"
+                    variant="primary"
+                    size="xs"
+                    class="!bg-[#9adbe8] !text-[#15121b] hover:!bg-[#89c6d3]"
+                >
                     Edit
                 </flux:button>
 
@@ -39,6 +51,7 @@
         @endif
     </div>
 
+    {{-- Content Section --}}
     <div class="mt-2 text-black dark:text-gray-200">
         @if(!$isEditing)
             {!! $model->text !!}
@@ -52,6 +65,7 @@
         @endif
     </div>
 
+    {{-- Delete Modal --}}
     <flux:modal name="delete-{{ $model->id }}" class="min-w-[22rem]">
         <div class="space-y-6">
             <div>
