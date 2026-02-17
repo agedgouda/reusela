@@ -4,12 +4,19 @@
         {{-- 1. Navigation --}}
         @if($editable)
             <button wire:click="goBack"
-               class="bg-[#9adbe8] rounded-[100px] px-[18px] py-[9px] flex flex-row gap-[10px] items-center text-[16px]/[20px] font-bold tracking-[-0.02em]">
-                <img class="h-[20px]" src="/images/arrow-10.svg" /> Back
+                class="group bg-[#9adbe8] cursor-pointer rounded-full px-[18px] h-[38px] flex items-center gap-[10px] text-[16px] font-bold tracking-[-0.02em] text-[#15121b] leading-[0]">
+                <div class="flex items-center justify-center shrink-0">
+                    <x-arrow-left />
+                </div>
+                <span class="inline-flex items-center">Back</span>
             </button>
-            @else
-            <button @click="resetUI" class="bg-[#9adbe8] rounded-[100px] px-[18px] py-[9px] flex flex-row gap-[10px] items-center text-[16px]/[20px] font-bold tracking-[-0.02em]">
-                <img class="h-[20px]" src="/images/arrow-10.svg" />Change Address
+        @else
+            <button @click="resetUI"
+                class="group bg-[#9adbe8] cursor-pointer rounded-full px-[18px] h-[38px] flex items-center gap-[10px] text-[16px] font-bold tracking-[-0.02em] text-[#15121b] leading-[0]">
+                <div class="flex items-center justify-center shrink-0">
+                    <x-arrow-left />
+                </div>
+                <span class="inline-flex items-center mt-1">Change Address</span>
             </button>
         @endif
         {{-- 2. Header --}}

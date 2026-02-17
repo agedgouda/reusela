@@ -70,6 +70,11 @@ class Show extends Component
         $this->performDelete($id, Section::class, 'Section');
     }
 
+    public function goBack()
+    {
+        return redirect('/jurisdictions');
+    }
+
     public function render()
     {
         return view('livewire.jurisdiction.show', [

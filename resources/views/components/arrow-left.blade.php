@@ -1,3 +1,3 @@
-<svg xmlns="http://www.w3.org/2000/svg" {{ $attributes->merge(['class' => 'w-5 h-5 text-gray-700']) }} fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+<svg width="21" height="15" viewBox="17 11 21 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+    <path d="M17.2929 18.2929C16.9024 18.6834 16.9024 19.3166 17.2929 19.7071L23.6569 26.0711C24.0474 26.4616 24.6805 26.4616 25.0711 26.0711C25.4616 25.6805 25.4616 25.0474 25.0711 24.6569L19.4142 19L25.0711 13.3431C25.4616 12.9526 25.4616 12.3195 25.0711 11.9289C24.6805 11.5384 24.0474 11.5384 23.6569 11.9289L17.2929 18.2929ZM38 19L38 18L18 18L18 19L18 20L38 20L38 19Z" fill="white"/>
 </svg>
