@@ -36,16 +36,16 @@
             @if($editable && !$showAddSectionForm && $showAddSectionButton)
                 <div class="sm:ml-auto">
                     <flux:button
-                        color="blue"
                         variant="primary"
+                        type="submit"
+                        class="w-full !bg-[#9adbe8] !text-[#15121b] hover:!bg-[#89c6d3] border-none !rounded-[12px]"
                         wire:click="$toggle('showAddSectionForm')"
-                        class="!rounded-[12px]">
+                        >
                         Add Section
                     </flux:button>
                 </div>
             @endif
         </div>
-
 
         {{-- 3. Add Section Form --}}
         @if($showAddSectionForm)
@@ -81,7 +81,7 @@
                             color="blue"
                             variant="primary"
                             size="xs"
-                            class="!rounded-[12px]">
+                            class="!rounded-[12px] !bg-[#9adbe8] !text-[#15121b] hover:!bg-[#89c6d3] ">
                             Edit
                         </flux:button>
                     @endif

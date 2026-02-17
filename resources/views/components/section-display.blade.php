@@ -26,7 +26,7 @@
 
         @if($editable && !$isEditing)
             <div class="flex items-center space-x-2">
-                <flux:button wire:click="toggleEdit({{ $model->id }})" color="blue" variant="primary" size="xs">
+                <flux:button wire:click="toggleEdit({{ $model->id }})" color="blue" variant="primary" size="xs" class="!bg-[#9adbe8] !text-[#15121b] hover:!bg-[#89c6d3] ">
                     Edit
                 </flux:button>
 

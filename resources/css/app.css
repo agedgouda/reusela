@@ -69,17 +69,16 @@
        This targets ONLY primary buttons and ignores nav/sidebar links.
     */
     [data-flux-button][data-variant="primary"] {
-        --color-accent: #2563eb; /* Blue-600 */
-        --color-accent-content: #ffffff;
+        --color-accent: #9adbe8; /* Your specific light blue */
+        --color-accent-content: #15121b; /* Dark text for better contrast on light blue */
         background-color: var(--color-accent) !important;
         color: var(--color-accent-content) !important;
     }
 
     [data-flux-button][data-variant="primary"]:hover {
-        --color-accent: #3b82f6; /* Blue-500 */
+        --color-accent: #89c6d3; /* A slightly darker shade for hover state */
         background-color: var(--color-accent) !important;
     }
-
     /* THE SHIELD: Prevent blue underlines on all buttons and nav links */
     [data-flux-button],
     [data-flux-button] a,
