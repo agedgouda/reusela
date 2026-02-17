@@ -4,6 +4,7 @@
         @include('partials.head')
 
         <script src="https://cdn.tiny.cloud/1/6v20tgz6hhmy6brv7zwsq3z1q36agqhkfht3e165e7ucldv5/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://use.typekit.net/kbi2kzd.css">
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800">
         <flux:header  class="mx-0 border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">

@@ -1,109 +1,133 @@
-<div class="p-6 space-y-4">
-    {{-- 1. Navigation --}}
-    @if($editable)
-        <a href="/jurisdictions" class="hover:text-blue-300 text-blue-800 mb-5 inline-block"><- Back</a>
-    @endif
+<div class="bg-white">
+    <div class="px-6 lg:px-12 py-12 space-y-10">
 
-    {{-- 2. Header --}}
-    <div class="flex items-center">
-        <h1 class="text-2xl font-bold">
-        @if($jurisdiction->is_system_default)
-            Default Information
-        @else
-            You're in {{ $jurisdiction->name !== 'Unincorporated' ? "the City of $jurisdiction->name!" : "$jurisdiction->name LA County!" }}
-        @endif
-        </h1>
-
-        {{-- Add Section button only shows if the user is allowed to edit THIS record --}}
-        @if($editable && !$showAddSectionForm && $showAddSectionButton)
-            <flux:button color="blue" variant="primary" wire:click="$toggle('showAddSectionForm')" class="ml-auto">
-                Add Section
-            </flux:button>
-        @endif
-    </div>
-
-    {{-- 3. Add Section Form --}}
-    @if($showAddSectionForm)
-        <div class="mb-4">
-            <livewire:section.edit-section
-                :model="new \App\Models\Section"
-                :parent-model="$jurisdiction"
-                foreign-key="jurisdiction_id"
-                wire:key="add-section-form"
-            />
-        </div>
-    @endif
-
-    {{-- 4. Jurisdiction General Information Card --}}
-    <x-jurisdiction-card :editable="$editable">
-        {{--
-            Logic: If the user has 'editable' permissions, always show the Edit button.
-            This allows them to "Override" the default by saving local info.
-        --}}
+        {{-- 1. Navigation --}}
         @if($editable)
-            <div class="jurisdiction-card-header flex justify-between items-center">
-                <div class="font-bold text-lg text-black dark:text-white">
-                    Jurisdiction Information
-                    {{-- Subtle hint that they are currently seeing the fallback --}}
-                    @if(empty($jurisdiction->general_information) && !$jurisdiction->is_system_default)
-                        <span class="text-xs text-gray-400 font-normal italic ml-2">(Default Template)</span>
-                    @endif
-                </div>
+            <a href="/jurisdictions"
+               class="inline-flex items-center text-[14px] font-medium text-[#00BEB2] hover:opacity-80 transition">
+                ← Back
+            </a>
+        @endif
 
-                @if(!$showGeneralInfoEdit)
-                    <flux:button wire:click="toggleEdit('general')" color="blue" variant="primary" size="xs">
-                        Edit
-                    </flux:button>
+
+        {{-- 2. Header --}}
+        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+
+            <div class="jurisdiction-name">
+                @if($jurisdiction->is_system_default)
+                    Default Information
+                @else
+                    You're in
+                    {{ $jurisdiction->name !== 'Unincorporated'
+                        ? "the City of $jurisdiction->name!"
+                        : "$jurisdiction->name LA County!" }}
                 @endif
             </div>
-        @endif
-
-        <div class="mt-2">
-            @if(!$showGeneralInfoEdit)
-                <div class="rich-text prose max-w-none dark:prose-invert">
-                    {{-- Always show the best available info (Local or Default) --}}
-                    {!! $jurisdiction->display_general_info !!}
+            {{-- Add Section button --}}
+            @if($editable && !$showAddSectionForm && $showAddSectionButton)
+                <div class="sm:ml-auto">
+                    <flux:button
+                        color="blue"
+                        variant="primary"
+                        wire:click="$toggle('showAddSectionForm')"
+                        class="!rounded-[12px]">
+                        Add Section
+                    </flux:button>
                 </div>
-            @else
-                {{--
-                    IMPORTANT: We pass the CURRENT jurisdiction.
-                    If it's empty, the editor will open blank or with a placeholder,
-                    and saving will write directly to THIS jurisdiction's database row.
-                --}}
-                <livewire:jurisdiction.edit :jurisdiction="$jurisdiction" wire:key="general-edit-form-{{ $jurisdiction->id }}" />
             @endif
         </div>
-    </x-jurisdiction-card>
 
-    {{-- 5. Dynamic Sections Loop --}}
-    <div class="space-y-3 mt-4">
-        @foreach($jurisdiction->display_sections as $section)
-            @php
-                // Logic: A section is editable only if it belongs to the current jurisdiction.
-                // If the loop is using Master sections, the ID won't match, so $canEdit is false.
-                $isLocalSection = $section->jurisdiction_id === $jurisdiction->id;
-                $canEditThisSection = $editable && ($isLocalSection || $jurisdiction->is_system_default);
-            @endphp
 
-            <x-section-display
-                :model="$section"
-                :editable="$canEditThisSection"
-                :editing-id="$editingSectionId"
-                :parent="$jurisdiction"
-                wire:key="section-wrapper-{{ $section->id }}-{{ $editingSectionId }}"
-            />
-        @endforeach
-
-        {{-- Fallback empty state if even the default has no sections --}}
-        @if($jurisdiction->display_sections->isEmpty())
-             <div class="text-gray-400 text-center py-8 border-2 border-dashed border-gray-200 rounded-lg">
-                No sections available.
+        {{-- 3. Add Section Form --}}
+        @if($showAddSectionForm)
+            <div class="bg-gray-50 rounded-[12px] p-6 border">
+                <livewire:section.edit-section
+                    :model="new \App\Models\Section"
+                    :parent-model="$jurisdiction"
+                    foreign-key="jurisdiction_id"
+                    wire:key="add-section-form"
+                />
             </div>
         @endif
-    </div>
 
-    {{-- 6. Shared Content (Statewide Laws) --}}
-    <div class="mt-10 pt-6 border-t border-gray-100">
-        <livewire:jurisdiction.shared-content contentKey="jurisdiction.show" />
+
+        {{-- 4. Jurisdiction General Information Card --}}
+        <x-jurisdiction-card :editable="$editable" class="bg-[#e4fbff] rounded-[20px] p-[72px] flex flex-col gap-[36px] items-start justify-start">
+
+            @if($editable)
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
+
+                    <div class="jurisdiction-information">
+                        Jurisdiction Information
+
+                        @if(empty($jurisdiction->general_information) && !$jurisdiction->is_system_default)
+                            <span class="text-[12px] text-gray-400 font-normal italic ml-2">
+                                (Default Template)
+                            </span>
+                        @endif
+                    </div>
+
+                    @if(!$showGeneralInfoEdit)
+                        <flux:button
+                            wire:click="toggleEdit('general')"
+                            color="blue"
+                            variant="primary"
+                            size="xs"
+                            class="!rounded-[12px]">
+                            Edit
+                        </flux:button>
+                    @endif
+                </div>
+            @endif
+
+
+            <div class="mt-4">
+                @if(!$showGeneralInfoEdit)
+                    <div class="prose max-w-none prose-gray text-[#1E1E1E]">
+                        {!! $jurisdiction->display_general_info !!}
+                    </div>
+                @else
+                    <livewire:jurisdiction.edit
+                        :jurisdiction="$jurisdiction"
+                        wire:key="general-edit-form-{{ $jurisdiction->id }}"
+                    />
+                @endif
+            </div>
+
+        </x-jurisdiction-card>
+
+
+        {{-- 5. Dynamic Sections --}}
+        <div class="space-y-6">
+
+            @foreach($jurisdiction->display_sections as $section)
+                @php
+                    $isLocalSection = $section->jurisdiction_id === $jurisdiction->id;
+                    $canEditThisSection = $editable && ($isLocalSection || $jurisdiction->is_system_default);
+                @endphp
+
+                <x-section-display
+                    :model="$section"
+                    :editable="$canEditThisSection"
+                    :editing-id="$editingSectionId"
+                    :parent="$jurisdiction"
+                    wire:key="section-wrapper-{{ $section->id }}-{{ $editingSectionId }}"
+                />
+            @endforeach
+
+            @if($jurisdiction->display_sections->isEmpty())
+                <div class="text-gray-400 text-center py-10 border-2 border-dashed border-gray-200 rounded-[12px]">
+                    No sections available.
+                </div>
+            @endif
+
+        </div>
+
+
+        {{-- 6. Shared Content --}}
+        <div class="pt-10 border-t border-gray-200">
+            <livewire:jurisdiction.shared-content contentKey="jurisdiction.show" />
+        </div>
+
     </div>
 </div>

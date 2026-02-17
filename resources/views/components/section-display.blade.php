@@ -11,7 +11,11 @@
     $title = $model->sectionTitle;
 @endphp
 
-<x-jurisdiction-card :editable="$editable" wire:key="card-{{ $model->id }}-{{ $isEditing ? 'edit' : 'view' }}">
+<x-jurisdiction-card
+    :editable="$editable"
+    :variant="$title->title === 'Report a Violation' ? 'violation' : 'default'"
+    wire:key="card-{{ $model->id }}-{{ $isEditing ? 'edit' : 'view' }}"
+>
     <div class="jurisdiction-card-header">
         <div class="flex items-center font-semibold text-gray-800 dark:text-gray-100 space-x-2">
             @if ($title->icon)
