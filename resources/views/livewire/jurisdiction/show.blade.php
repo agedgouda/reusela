@@ -4,7 +4,7 @@
         {{-- 1. Navigation --}}
         @if($editable)
             <button wire:click="goBack"
-                class="group bg-[#9adbe8] cursor-pointer rounded-full px-[18px] h-[38px] flex items-center gap-[10px] text-[16px] font-bold tracking-[-0.02em] text-[#15121b] leading-[0]">
+                class="group bg-[#9adbe8] hover:!bg-[#89c6d3] cursor-pointer rounded-full px-[18px] h-[38px] flex items-center gap-[10px] text-[16px] font-bold tracking-[-0.02em] text-[#15121b] leading-[0]">
                 <div class="flex items-center justify-center shrink-0">
                     <x-arrow-left />
                 </div>
@@ -12,7 +12,7 @@
             </button>
         @else
             <button @click="resetUI"
-                class="group bg-[#9adbe8] cursor-pointer rounded-full px-[18px] h-[38px] flex items-center gap-[10px] text-[16px] font-bold tracking-[-0.02em] text-[#15121b] leading-[0]">
+                class="group bg-[#9adbe8] hover:!bg-[#89c6d3] cursor-pointer rounded-full px-[18px] h-[38px] flex items-center gap-[10px] text-[16px] font-bold tracking-[-0.02em] text-[#15121b] leading-[0]">
                 <div class="flex items-center justify-center shrink-0">
                     <x-arrow-left />
                 </div>
