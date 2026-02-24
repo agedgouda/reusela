@@ -31,13 +31,13 @@
     x-init="initTiny()"
     id="{{ 'editor-' . $attributes->get('id', Str::random(8)) }}"
 >
-    <div wire:ignore class="bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 overflow-hidden shadow-sm">
+    <div wire:ignore class="bg-white rounded-lg border border-zinc-200 overflow-hidden shadow-sm">
         {{-- Unique Toolbar for this instance --}}
-        <div :id="'tiny-toolbar-' + $el.id" class="bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700 min-h-[40px]"></div>
+        <div :id="'tiny-toolbar-' + $el.id" class="bg-zinc-50 border-b border-zinc-200 min-h-[40px]"></div>
 
         <div
             x-ref="tinyditor"
-            class="p-4 min-h-[300px] focus:outline-none text-black dark:text-white prose dark:prose-invert max-w-none"
+            class="p-4 min-h-[300px] focus:outline-none text-black max-w-none"
         >
             {!! $attributes->get('value') !!}
         </div>

@@ -52,7 +52,7 @@
     </div>
 
     {{-- Content Section --}}
-    <div class="mt-2 text-black dark:text-gray-200">
+    <div class="mt-2 text-black">
         @if(!$isEditing)
             {!! $model->text !!}
         @else

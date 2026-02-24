@@ -3,7 +3,7 @@
     <div class="w-full max-w-4xl flex flex-col ">
         <h1 class="text-2xl font-bold">User Details</h1>
 
-        <div class="bg-white dark:bg-neutral-900 rounded-lg p-6 shadow flex flex-col gap-4">
+        <div class="bg-white rounded-lg p-6 shadow flex flex-col gap-4">
             <div>
                 <div class="text-sm text-gray-500">Name</div>
                 <div class="text-lg font-medium">{{ $user->name }}</div>
@@ -40,12 +40,12 @@
     {{-- Delete Confirmation Modal --}}
     @if ($confirmingDelete)
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-            <div class="bg-white dark:bg-neutral-900 rounded-lg shadow-lg p-6 w-full max-w-md">
+            <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
                 <h2 class="text-lg font-semibold mb-4">
                     Delete User
                 </h2>
 
-                <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                <p class="text-sm text-gray-600 mb-6">
                     Are you sure you want to delete <strong>{{ $user->name }}</strong>?
                     This action cannot be undone.
                 </p>
