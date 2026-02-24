@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="light">
     <head>
+        <meta name="color-scheme" content="light">
         @include('partials.head')
 
         <script src="https://cdn.tiny.cloud/1/6v20tgz6hhmy6brv7zwsq3z1q36agqhkfht3e165e7ucldv5/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>

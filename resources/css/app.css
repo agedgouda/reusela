@@ -6,6 +6,19 @@
 @source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
 @source '../../vendor/livewire/flux/stubs/**/*.blade.php';
 
+:root {
+    color-scheme: light;
+    background-color: #ffffff;
+}
+
+html {
+    background-color: #ffffff;
+}
+
+body {
+    background-color: #ffffff;
+}
+
 
 @theme {
     --font-sans: "sofia-pro", sans-serif;
