@@ -8,12 +8,12 @@
 
         <div wire:ignore class="bg-white rounded-lg border border-zinc-200 overflow-hidden shadow-sm">
             {{-- Toolbar area anchored to this specific component ID --}}
-            <div id="tiny-toolbar-{{ $this->getId() }}" class="bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 min-h-[40px]"></div>
+            <div id="tiny-toolbar-{{ $this->getId() }}" class="bg-zinc-50 border-b border-zinc-200 min-h-[40px]"></div>
 
             {{-- Editor area --}}
             <div
                 x-ref="tinyditor"
-                class="p-4 min-h-[300px] focus:outline-none text-black  prose dark:prose-invert max-w-none"
+                class="p-4 min-h-[300px] focus:outline-none text-black  prose max-w-none"
             >
                 {!! $content !!}
             </div>

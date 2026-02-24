@@ -18,21 +18,22 @@
     class="w-full !items-stretch"
 >
     {{-- Header Section: Flex wrapper with justify-between pushes items to opposite ends --}}
-    <div class="w-full mb-[36px] flex items-center justify-between">
+    <div class="md:w-full mb-[36px] flex flex-col md:flex-row items-start md:items-center justify-start md:justify-between gap-[18px]">
 
         {{-- Left Section: Icon and Title --}}
-        <div class="flex flex-row gap-[18px] items-center h-[36px]">
+        <div class="flex flex-col md:flex-row items-start md:items-center gap-[9px] md:gap-[18px] h-auto md:h-[36px]">
             @if ($title->icon)
                 <img class="h-8 w-auto" src="{{ Storage::url('icons/' . $title->icon) }}" alt="icon">
             @endif
-            <span class="text-[28px] leading-[36px] tracking-[-0.05em] font-bold">
+
+            <span class="text-[24px] md:text-[28px] leading-[36px] tracking-[-0.05em] font-bold">
                 {{ $title->title }}
             </span>
         </div>
 
         {{-- Right Section: Buttons --}}
         @if($editable && !$isEditing)
-            <div class="flex items-center gap-2 shrink-0">
+            <div class="flex items-center gap-2 shrink-0 w-full md:w-auto">
                 <flux:button
                     wire:click="toggleEdit({{ $model->id }})"
                     variant="primary"
