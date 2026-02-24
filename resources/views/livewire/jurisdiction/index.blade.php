@@ -39,7 +39,7 @@
         wire:navigate>
             <div class="flex ml-1 items-center">
                 @if($jurisdiction->sections_count)
-                    <x-heroicon-s-document-text class="w-4 h-4 mr-1 text-sky-700" />
+
                 @endif
                 {{ $jurisdiction->name }}
             </div>
