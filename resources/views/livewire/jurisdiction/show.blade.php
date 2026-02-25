@@ -16,7 +16,7 @@
                 <div class="flex items-center justify-center shrink-0">
                     <x-arrow-left />
                 </div>
-                <span class="inline-flex items-center mt-1">Change Address</span>
+                <span class="inline-flex items-center">Change Address</span>
             </button>
         @endif
         {{-- 2. Header --}}
