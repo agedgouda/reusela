@@ -61,7 +61,7 @@
 
 
         {{-- 4. Jurisdiction General Information Card --}}
-        @if(!empty($jurisdiction->general_information) || $jurisdiction->is_system_default)
+        @if(!empty($jurisdiction->general_information) && !$jurisdiction->is_system_default)
         <x-jurisdiction-card :editable="$editable" >
 
                 <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
@@ -98,7 +98,43 @@
             </div>
 
         </x-jurisdiction-card>
+        @elseif(empty($jurisdiction->general_information) && !$jurisdiction->is_system_default && $editable)
+            <x-jurisdiction-card :editable="$editable" >
+
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
+
+                    <div class="text-[#15121b] text-left sm:p-7 md:pl-0 font-sans text-[24px] md:text-[32px]/[36px] tracking-[-0.05em] font-bold">
+                        Jurisdiction Information
+                    </div>
+
+                    @if(!$showGeneralInfoEdit  && $editable)
+                        <flux:button
+                            wire:click="toggleEdit('general')"
+                            color="blue"
+                            variant="primary"
+                            size="xs"
+                            class="!rounded-[12px] !bg-[#9adbe8] !text-[#15121b] hover:!bg-[#89c6d3] "
+                        >
+                            Edit
+                        </flux:button>
+                    @endif
+                </div>
+                <div class="mt-4">
+                    @if(!$showGeneralInfoEdit)
+                        <div class="prose max-w-none prose-gray text-[#1E1E1E]">
+                            {!! $jurisdiction->display_general_info !!}
+                        </div>
+                    @else
+                        <livewire:jurisdiction.edit
+                            :jurisdiction="$jurisdiction"
+                            wire:key="general-edit-form-{{ $jurisdiction->id }}"
+                        />
+                    @endif
+                </div>
+
+        </x-jurisdiction-card>
         @endif
+
 
         {{-- 5. Dynamic Sections --}}
         <div class="space-y-6">
@@ -117,6 +153,12 @@
                     wire:key="section-wrapper-{{ $section->id }}-{{ $editingSectionId }}"
                 />
             @endforeach
+
+            @if($jurisdiction->display_sections->isEmpty())
+                <div class="text-gray-400 text-center py-10 border-2 border-dashed border-gray-200 rounded-[12px]">
+                    No sections available.
+                </div>
+            @endif
 
         </div>
 
