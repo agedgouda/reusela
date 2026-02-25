@@ -1,5 +1,5 @@
 <div class="bg-white">
-    <div class="px-6 lg:px-12 space-y-10">
+    <div class="md:px-6 lg:px-12 space-y-10">
 
         {{-- 1. Navigation --}}
         @if($editable)
