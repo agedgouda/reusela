@@ -8,7 +8,7 @@
                 <div class="flex items-center justify-center shrink-0">
                     <x-arrow-left />
                 </div>
-                <span class="inline-flex items-center">Back</span>
+                <span class="inline-flex items-center mt-1">Back</span>
             </button>
         @else
             <button @click="resetUI"
@@ -61,18 +61,13 @@
 
 
         {{-- 4. Jurisdiction General Information Card --}}
+        @if(!empty($jurisdiction->general_information) || $jurisdiction->is_system_default)
         <x-jurisdiction-card :editable="$editable" >
 
                 <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
 
                     <div class="text-[#15121b] text-left sm:p-7 md:pl-0 font-sans text-[24px] md:text-[32px]/[36px] tracking-[-0.05em] font-bold">
                         Jurisdiction Information
-
-                        @if(empty($jurisdiction->general_information) && !$jurisdiction->is_system_default)
-                            <span class="text-[12px] text-gray-400 font-normal italic ml-2">
-                                (Default Template)
-                            </span>
-                        @endif
                     </div>
 
                     @if(!$showGeneralInfoEdit  && $editable)
@@ -103,7 +98,7 @@
             </div>
 
         </x-jurisdiction-card>
-
+        @endif
 
         {{-- 5. Dynamic Sections --}}
         <div class="space-y-6">
