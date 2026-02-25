@@ -20,7 +20,7 @@
             </button>
         @endif
         {{-- 2. Header --}}
-        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-4 w-[366px] md:w-full sm:justify-between">
 
             <div class="text-[#15121b] text-left font-sans text-[40px]/[36px] tracking-[-0.05em] font-bold">
                 @if($jurisdiction->is_system_default)
@@ -65,7 +65,7 @@
 
                 <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
 
-                    <div class="text-[#15121b] text-left font-sans text-[32px]/[36px] tracking-[-0.05em] font-bold">
+                    <div class="text-[#15121b] text-left sm:p-7 font-sans text-[24px] md:text-[32px]/[36px] tracking-[-0.05em] font-bold">
                         Jurisdiction Information
 
                         @if(empty($jurisdiction->general_information) && !$jurisdiction->is_system_default)
