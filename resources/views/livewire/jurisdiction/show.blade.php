@@ -8,7 +8,7 @@
                 <div class="flex items-center justify-center shrink-0">
                     <x-arrow-left />
                 </div>
-                <span class="inline-flex items-center mt-1">Back</span>
+                <span class="inline-flex items-center">Back</span>
             </button>
         @else
             <button @click="resetUI"
