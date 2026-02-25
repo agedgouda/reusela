@@ -15,7 +15,7 @@
     :editable="$editable"
     :variant="$title->title === 'Report a Violation' ? 'violation' : 'default'"
     wire:key="card-{{ $model->id }}-{{ $isEditing ? 'edit' : 'view' }}"
-    class="w-full !items-stretch"
+    class="!items-stretch"
 >
     {{-- Header Section: Flex wrapper with justify-between pushes items to opposite ends --}}
     <div class="md:w-full mb-[36px] flex flex-col md:flex-row items-start md:items-center justify-start md:justify-between gap-[18px]">
