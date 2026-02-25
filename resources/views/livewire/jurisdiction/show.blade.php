@@ -154,7 +154,7 @@
                 />
             @endforeach
 
-            @if($jurisdiction->display_sections->isEmpty())
+            @if($jurisdiction->display_sections->isEmpty() && $editable)
                 <div class="text-gray-400 text-center py-10 border-2 border-dashed border-gray-200 rounded-[12px]">
                     No sections available.
                 </div>
