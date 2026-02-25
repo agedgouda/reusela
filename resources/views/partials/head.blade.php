@@ -9,7 +9,7 @@
 
 <link rel="preconnect" href="https://fonts.bunny.net">
 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-<link rel="stylesheet" href="https://use.typekit.net/kbi2kzd.css">
+<link rel="stylesheet" href="https://use.typekit.net/bdf6fuz.css">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/trix@2.0.0/dist/trix.css">
 <script src="https://cdn.jsdelivr.net/npm/trix@2.0.0/dist/trix.umd.min.js"></script>
