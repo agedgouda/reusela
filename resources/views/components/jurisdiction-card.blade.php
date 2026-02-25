@@ -12,7 +12,7 @@
     "$bgColor border rounded-[12px] flex flex-col gap-[36px] items-start justify-start md:prose max-w-none text-[16px] leading-[24px] text-[#1E1E1E]",
 
     // mobile width/padding
-    "w-[366px] p-9",
+    "w-[350px] p-9",
 
     // desktop overrides
     "md:w-full md:p-[72px]",
