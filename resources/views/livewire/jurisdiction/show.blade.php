@@ -61,7 +61,7 @@
 
 
         {{-- 4. Jurisdiction General Information Card --}}
-        @if(!empty($jurisdiction->general_information) && !$jurisdiction->is_system_default)
+        @if(!empty($jurisdiction->general_information) )
         <x-jurisdiction-card :editable="$editable" >
 
                 <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
@@ -98,7 +98,8 @@
             </div>
 
         </x-jurisdiction-card>
-        @elseif(empty($jurisdiction->general_information) && !$jurisdiction->is_system_default && $editable)
+
+        @elseif(empty($jurisdiction->general_information) && !$jurisdiction->is_system_default)
             <x-jurisdiction-card :editable="$editable" >
 
                 <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
