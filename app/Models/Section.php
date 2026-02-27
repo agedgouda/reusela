@@ -10,7 +10,7 @@ class Section extends Model
 {
     use HasFactory;
 
-    // This triggers the 'saved' event on the parent Jurisdiction
+    // Keep this; it ensures the Jurisdiction's 'updated_at' changes
     protected $touches = ['jurisdiction'];
 
     protected $fillable = [
@@ -22,12 +22,12 @@ class Section extends Model
     protected static function booted()
     {
         static::saved(function ($section) {
-            // If this section belongs to a jurisdiction, flush the tags
-            // This ensures the 'master_sections_collection' is refreshed
-            Cache::tags(['jurisdictions'])->flush();
-        });
+            \Log::info('--- SECTION SAVED START ---');
+            \Log::info('Section ID: ' . $section->id);
+            \Log::info('Linked Jurisdiction ID: ' . ($section->jurisdiction_id ?? 'NULL'));
 
-        static::deleted(function ($section) {
+            // Check the driver - if this says 'file', tags will NOT work
+            $driver = config('cache.default');
             Cache::tags(['jurisdictions'])->flush();
         });
     }

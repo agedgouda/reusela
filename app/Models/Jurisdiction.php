@@ -118,20 +118,16 @@ class Jurisdiction extends Model
                 ->sortBy(fn($s) => $s->sectionTitle->sort_order ?? 0);
         }
 
-        return Cache::rememberForever('master_sections_collection', function() {
+        // Wrap this in tags so the flush command can find it
+        return Cache::tags(['jurisdictions'])->rememberForever('master_sections_collection', function() {
             $master = $this->getDefaultRecord();
 
-            if (!$master) {
-                \Log::error('Accessor: Master record NOT FOUND in database.');
-                return collect();
-            }
-
-            $masterSections = $master->sections()
-                ->with('sectionTitle')
-                ->get()
-                ->sortBy(fn($s) => $s->sectionTitle->sort_order ?? 0);
-
-            return $masterSections;
+            return $master
+                ? $master->sections()
+                    ->with('sectionTitle')
+                    ->get()
+                    ->sortBy(fn($s) => $s->sectionTitle->sort_order ?? 0)
+                : collect();
         });
     }
     /*
