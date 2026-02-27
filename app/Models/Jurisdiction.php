@@ -77,9 +77,10 @@ class Jurisdiction extends Model
     public function getDefaultRecord()
     {
         return Cache::tags(['jurisdictions'])->rememberForever('jurisdiction_master_record', function() {
-            return self::withoutGlobalScope('excludeDefault')
+            $record = self::withoutGlobalScope('excludeDefault')
                 ->where('is_system_default', true)
                 ->first();
+            return $record;
         });
     }
 
@@ -110,7 +111,6 @@ class Jurisdiction extends Model
      */
     public function getDisplaySectionsAttribute()
     {
-        // Check for local sections first
         if ($this->sections()->exists()) {
             return $this->sections()
                 ->with('sectionTitle')
@@ -118,18 +118,22 @@ class Jurisdiction extends Model
                 ->sortBy(fn($s) => $s->sectionTitle->sort_order ?? 0);
         }
 
-        // Fallback to Master sections
         return Cache::rememberForever('master_sections_collection', function() {
             $master = $this->getDefaultRecord();
-            return $master
-                ? $master->sections()
-                    ->with('sectionTitle')
-                    ->get()
-                    ->sortBy(fn($s) => $s->sectionTitle->sort_order ?? 0)
-                : collect();
+
+            if (!$master) {
+                \Log::error('Accessor: Master record NOT FOUND in database.');
+                return collect();
+            }
+
+            $masterSections = $master->sections()
+                ->with('sectionTitle')
+                ->get()
+                ->sortBy(fn($s) => $s->sectionTitle->sort_order ?? 0);
+
+            return $masterSections;
         });
     }
-
     /*
     |--------------------------------------------------------------------------
     | Scopes

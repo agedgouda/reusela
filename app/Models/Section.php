@@ -15,6 +15,19 @@ class Section extends Model
         'text',
     ];
 
+    protected static function booted()
+    {
+        static::saved(function ($section) {
+            // If this section belongs to a jurisdiction, flush the tags
+            // This ensures the 'master_sections_collection' is refreshed
+            Cache::tags(['jurisdictions'])->flush();
+        });
+
+        static::deleted(function ($section) {
+            Cache::tags(['jurisdictions'])->flush();
+        });
+    }
+
     public function jurisdiction()
     {
         return $this->belongsTo(Jurisdiction::class, 'jurisdiction_id', 'id');

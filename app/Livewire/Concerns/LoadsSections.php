@@ -14,11 +14,16 @@ trait LoadsSections
     /**
      * The core data loading method
      */
-    public function loadSections(string $modelClass, mixed $parentId = null, string $foreignKey = 'jurisdiction_id')
-    {
-        $this->sections = app(GetSectionsAction::class)->execute($modelClass, $parentId, $foreignKey);
-    }
+public function loadSections(string $modelClass, mixed $parentId = null, string $foreignKey = 'jurisdiction_id')
+{
+    $actionResults = app(GetSectionsAction::class)->execute($modelClass, $parentId, $foreignKey);
 
+    if ($actionResults->isEmpty()) {
+        $this->sections = $this->jurisdiction->display_sections;
+    } else {
+        $this->sections = $actionResults;
+    }
+}
     /**
      * Shared refresh logic for both Show and DefaultContent
      */

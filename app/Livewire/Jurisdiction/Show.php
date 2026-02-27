@@ -43,7 +43,8 @@ class Show extends Component
             $this->editable = $editable;
         }
 
-        $this->refreshSections();
+        $bob = $this->refreshSections();
+
     }
 
     /**
@@ -75,12 +76,11 @@ class Show extends Component
         return redirect('/jurisdictions');
     }
 
-    public function render()
-    {
-        return view('livewire.jurisdiction.show', [
-            // Using the accessors we just fixed
-            'generalInfo' => $this->jurisdiction->display_general_info,
-            'sectionsToDisplay' => $this->jurisdiction->display_sections,
-        ]);
-    }
+public function render()
+{
+    return view('livewire.jurisdiction.show', [
+        'generalInfo' => $this->jurisdiction->display_general_info,
+        'sectionsToDisplay' => $this->sections,
+    ]);
+}
 }
