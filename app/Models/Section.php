@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Cache;
 
 class Section extends Model
 {
     use HasFactory;
+
+    // This triggers the 'saved' event on the parent Jurisdiction
+    protected $touches = ['jurisdiction'];
 
     protected $fillable = [
         'jurisdiction_id',
