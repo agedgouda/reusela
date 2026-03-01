@@ -112,6 +112,17 @@
 
         {{ $slot }}
         @livewireScripts
+        <script>
+        document.addEventListener('livewire:init', () => {
+            Livewire.hook('request', ({ fail }) => {
+                fail(({ status }) => {
+                    if (status === 419) {
+                        window.location.reload();
+                    }
+                });
+            });
+        });
+        </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js" defer></script>
         @fluxScripts
         <x-notification-toast />

@@ -74,6 +74,7 @@ class JurisdictionsTableSeeder extends Seeder
         Jurisdiction::create(['name' => 'Glendora', 'county_id' => $county->id]);
         Jurisdiction::create(['name' => 'Granada Hills', 'county_id' => $county->id]);
         Jurisdiction::create(['name' => 'Hawthorne', 'county_id' => $county->id]);
+        Jurisdiction::create(['name' => 'Hawaiian Gardens', 'county_id' => $county->id]);
         Jurisdiction::create(['name' => 'Huntington Park', 'county_id' => $county->id]);
         Jurisdiction::create(['name' => 'Inglewood', 'county_id' => $county->id]);
         Jurisdiction::create(['name' => 'La Canada Flintridge', 'county_id' => $county->id]);
