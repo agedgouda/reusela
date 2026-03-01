@@ -64,7 +64,7 @@ class EditSection extends Component
             ->pluck('section_title_id');
 
         return view('livewire.section.edit-section', [
-            'availableSectionTitles' => SectionTitle::whereNotIn('id', $usedTitleIds)->get()
+            'availableSectionTitles' => SectionTitle::whereNotIn('id', $usedTitleIds)->orderBy('sort_order')->get()
         ]);
     }
 }
