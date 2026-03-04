@@ -1,32 +1,22 @@
 @import 'tailwindcss';
 @import '../../vendor/livewire/flux/dist/flux.css';
 
+@variant dark (&:not(*));
+
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
 @source '../../vendor/livewire/flux/stubs/**/*.blade.php';
 
 :root {
-    color-scheme: light;
-    background-color: #ffffff;
+    color-scheme: light !important;
+    --flux-bg: #ffffff !important;
+    --flux-fg: #171717 !important;
+    --flux-border: #e5e5e5 !important;
 }
-
-html {
-    background-color: #ffffff;
-}
-
-body {
-    background-color: #ffffff;
-}
-
 
 @theme {
-    /* THIS IS THE FIX: It tells the Tailwind compiler to STOP generating
-       media queries and wait for a .dark class that you aren't providing. */
-    --config-dark-mode: selector;
-
     --font-sans: "sofia-pro", sans-serif;
-
     --color-zinc-50: #fafafa;
     --color-zinc-100: #f5f5f5;
     --color-zinc-200: #e5e5e5;
@@ -38,123 +28,74 @@ body {
     --color-zinc-800: #262626;
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
-
-    --color-accent: var(--color-zinc-800);
-    --color-accent-content: var(--color-zinc-800);
-    --color-accent-foreground: var(--color-white);
 }
 
-
-@layer base {
-    ul { @apply list-disc ml-5; }
-    ol { @apply list-decimal ml-5; }
-
-    *, ::after, ::before, ::backdrop, ::file-selector-button {
-        border-color: var(--color-zinc-200, currentColor);
-    }
-
-    /* RICH TEXT: Only target links inside content containers */
-    .rich-text a,
-    .prose a,
-    .tox-tinymce-inline a {
-        color: #008179 !important;
-        font-weight: 600 !important;
-        text-decoration: underline !important;
-        text-underline-offset: 3px !important;
-        text-decoration-thickness: 1px !important;
-    }
-
-    .rich-text a:hover,
-    .prose a:hover {
-        color: #008179 !important;
-        font-weight: 700 !important;
-        text-decoration-thickness: 2px !important;
-    }
+/* THE FIX: Specifically target danger button internal variables */
+[data-flux-button][data-variant="danger"] {
+    background-color: #ef4444 !important;
+    color: #ffffff !important;
+    --color-accent: #ef4444 !important;
+    --color-accent-content: #ffffff !important;
 }
 
-@layer base {
-    /* PRIMARY BUTTON BRANDING
-       This targets ONLY primary buttons and ignores nav/sidebar links.
-    */
-    [data-flux-button][data-variant="primary"] {
-        --color-accent: #9adbe8; /* Your specific light blue */
-        --color-accent-content: #15121b; /* Dark text for better contrast on light blue */
-        background-color: var(--color-accent) !important;
-        color: var(--color-accent-content) !important;
-    }
-
-    [data-flux-button][data-variant="primary"]:hover {
-        --color-accent: #89c6d3; /* A slightly darker shade for hover state */
-        background-color: var(--color-accent) !important;
-    }
-    /* THE SHIELD: Prevent blue underlines on all buttons and nav links */
-    [data-flux-button],
-    [data-flux-button] a,
-    .flux-button,
-    [data-flux-nav-link],
-    [data-flux-sidebar-item] {
-        text-decoration: none !important;
-    }
-
-    /* Ensure Nav/Sidebar text stays its original color (Inherit from parent) */
-    [data-flux-nav-link],
-    [data-flux-sidebar-item] {
-        color: inherit !important;
-    }
-
-    /* Flux Form Field Layouts */
-    [data-flux-field]:not(ui-radio, ui-checkbox) { @apply grid gap-2; }
-    [data-flux-label] { @apply !mb-0 !leading-tight; }
-
-    input:focus[data-flux-control],
-    textarea:focus[data-flux-control],
-    select:focus[data-flux-control] {
-        @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
-    }
+/* Specifically target primary button internal variables */
+[data-flux-button][data-variant="primary"] {
+    background-color: #9adbe8 !important;
+    color: #15121b !important;
+    --color-accent: #9adbe8 !important;
+    --color-accent-content: #15121b !important;
 }
 
-@layer base {
-    /* Only layout and behavior here */
-    .jurisdiction-card {
-        @apply transition-all ;
-    }
-
-    .jurisdiction-card-editable {
-        @apply border border-zinc-200 rounded-lg pt-3 px-3 pb-6 min-h-[20px];
-    }
-
-    .jurisdiction-card-header {
-        @apply w-full mb-[36px];
-    }
-
-    @media (prefers-color-scheme: dark) {
-        :root {
-            --flux-bg: #ffffff;
-            --flux-fg: #18181b; /* zinc-900 */
-            --flux-border: #e4e4e7; /* zinc-200 */
-        }
-    }
+/* Kill all dark-mode rings and pseudo-elements */
+[data-flux-button]::after {
+    display: none !important;
 }
 
-/* Force Flux to use Light Mode variables even if the browser asks for Dark */
+/* Force light mode variables across all media queries */
 @media (prefers-color-scheme: dark) {
     :root {
         --flux-bg: #ffffff !important;
         --flux-fg: #171717 !important;
         --flux-border: #e5e5e5 !important;
-
-        /* This kills the specific color-mix transparency you saw in the inspector */
-        --color-white: #000000 !important;
+        --color-zinc-600: #e5e5e5 !important;
+        --color-white: #ffffff !important;
     }
 
-    /* Force the specific background you used in Blade to stay light */
-    .bg-zinc-50 {
-        background-color: #fafafa !important;
+    [data-flux-button][data-variant="danger"] {
+        background-color: #ef4444 !important;
+        color: #ffffff !important;
+        --color-accent: #ef4444 !important;
+        --color-accent-content: #ffffff !important;
     }
 }
 
-
-[x-cloak] {
-    display: none !important;
+/* Nav & Sidebar overrides */
+[data-flux-navbar-item], [data-flux-navlist-item], [data-flux-sidebar-item] {
+    --color-zinc-800: #262626 !important;
+    --color-zinc-100: #f5f5f5 !important;
+    --color-accent: #262626 !important;
+    --color-accent-content: #ffffff !important;
+    color: inherit !important;
+    text-decoration: none !important;
 }
 
+[data-flux-navbar-item][data-current], [data-flux-navlist-item][data-current] {
+    border-color: #262626 !important;
+}
+
+@layer base {
+    ul { @apply list-disc ml-5; }
+    ol { @apply list-decimal ml-5; }
+    *, ::after, ::before { border-color: var(--color-zinc-200, currentColor); }
+
+    .rich-text a, .prose a {
+        color: #008179 !important;
+        font-weight: 600 !important;
+        text-decoration: underline !important;
+    }
+
+    [data-flux-field]:not(ui-radio, ui-checkbox) { @apply grid gap-2; }
+    [data-flux-label] { @apply !mb-0 !leading-tight; }
+}
+
+[x-cloak] { display: none !important; }

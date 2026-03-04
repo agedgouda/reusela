@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="light" style="color-scheme: light;">
+<html lang="en" appearance="light" class="light" style="color-scheme: light !important;">
     <head>
         <script>
     // 1. Force the browser rendering engine
@@ -163,6 +163,5 @@
 
         @fluxScripts
         <x-notification-toast />
-
     </body>
 </html>
