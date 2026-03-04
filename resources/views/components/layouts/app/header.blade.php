@@ -52,7 +52,7 @@
             </a>
 
             <flux:navbar class="-mb-px max-lg:hidden">
-                <flux:navbar.item icon="city" :href="route('jurisdiction.index')" :current="request()->routeIs('jurisdiction.index')" wire:navigate>
+                <flux:navbar.item icon="city" :href="route('jurisdiction.index')" :current="request()->routeIs('jurisdiction.*')" wire:navigate>
                     {{ __('Jurisdictions') }}
                 </flux:navbar.item>
 
@@ -60,7 +60,7 @@
                     {{ __('Section Titles') }}
                 </flux:navbar.item>
 
-                <flux:navbar.item icon="users" :href="route('user.index')" :current="request()->routeIs('user.index')" wire:navigate>
+                <flux:navbar.item icon="users" :href="route('user.index')" :current="request()->routeIs('user.*')" wire:navigate>
                     {{ __('Users') }}
                 </flux:navbar.item>
             </flux:navbar>
@@ -124,7 +124,7 @@
 
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')">
-                    <flux:navlist.item icon="city" :href="route('jurisdiction.index')" :current="request()->routeIs('jurisdiction.index')" wire:navigate>
+                    <flux:navlist.item icon="city" :href="route('jurisdiction.index')" :current="request()->routeIs('jurisdiction.*')" wire:navigate>
                         {{ __('Jurisdictions') }}
                     </flux:navlist.item>
 
@@ -132,7 +132,7 @@
                         {{ __('Section Titles') }}
                     </flux:navlist.item>
 
-                    <flux:navlist.item icon="users" :href="route('user.index')" :current="request()->routeIs('user.index')" wire:navigate>
+                    <flux:navlist.item icon="users" :href="route('user.index')" :current="request()->routeIs('user.*')" wire:navigate>
                         {{ __('Users') }}
                     </flux:navlist.item>
 

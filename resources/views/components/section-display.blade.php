@@ -44,7 +44,7 @@
                 </flux:button>
 
                 <flux:modal.trigger name="delete-{{ $model->id }}">
-                    <flux:button variant="danger" size="xs" >
+                    <flux:button variant="danger" size="xs" style="color: white !important;">
                         Delete
                     </flux:button>
                 </flux:modal.trigger>

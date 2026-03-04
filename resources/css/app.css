@@ -1,22 +1,34 @@
 @import 'tailwindcss';
 @import '../../vendor/livewire/flux/dist/flux.css';
-
 @variant dark (&:not(*));
-
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
 @source '../../vendor/livewire/flux/stubs/**/*.blade.php';
 
+
+
 :root {
-    color-scheme: light !important;
-    --flux-bg: #ffffff !important;
-    --flux-fg: #171717 !important;
-    --flux-border: #e5e5e5 !important;
+    color-scheme: light;
+    background-color: #ffffff;
 }
 
+html {
+    background-color: #ffffff;
+}
+
+body {
+    background-color: #ffffff;
+}
+
+
 @theme {
+    /* THIS IS THE FIX: It tells the Tailwind compiler to STOP generating
+       media queries and wait for a .dark class that you aren't providing. */
+
+
     --font-sans: "sofia-pro", sans-serif;
+
     --color-zinc-50: #fafafa;
     --color-zinc-100: #f5f5f5;
     --color-zinc-200: #e5e5e5;
@@ -28,30 +40,98 @@
     --color-zinc-800: #262626;
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
+
+    --color-accent: var(--color-zinc-800);
+    --color-accent-content: var(--color-zinc-800);
+    --color-accent-foreground: var(--color-white);
 }
 
-/* THE FIX: Specifically target danger button internal variables */
-[data-flux-button][data-variant="danger"] {
-    background-color: #ef4444 !important;
-    color: #ffffff !important;
-    --color-accent: #ef4444 !important;
-    --color-accent-content: #ffffff !important;
+
+@layer base {
+    ul { @apply list-disc ml-5; }
+    ol { @apply list-decimal ml-5; }
+
+    *, ::after, ::before, ::backdrop, ::file-selector-button {
+        border-color: var(--color-zinc-200, currentColor);
+    }
+
+    /* RICH TEXT: Only target links inside content containers */
+    .rich-text a,
+    .prose a,
+    .tox-tinymce-inline a {
+        color: #008179 !important;
+        font-weight: 600 !important;
+        text-decoration: underline !important;
+        text-underline-offset: 3px !important;
+        text-decoration-thickness: 1px !important;
+    }
+
+    .rich-text a:hover,
+    .prose a:hover {
+        color: #008179 !important;
+        font-weight: 700 !important;
+        text-decoration-thickness: 2px !important;
+    }
 }
 
-/* Specifically target primary button internal variables */
-[data-flux-button][data-variant="primary"] {
-    background-color: #9adbe8 !important;
-    color: #15121b !important;
-    --color-accent: #9adbe8 !important;
-    --color-accent-content: #15121b !important;
+@layer base {
+    /* PRIMARY BUTTON BRANDING
+       This targets ONLY primary buttons and ignores nav/sidebar links.
+    */
+    [data-flux-button][data-variant="primary"] {
+        --color-accent: #9adbe8; /* Your specific light blue */
+        --color-accent-content: #15121b; /* Dark text for better contrast on light blue */
+        background-color: var(--color-accent) !important;
+        color: var(--color-accent-content) !important;
+    }
+
+    [data-flux-button][data-variant="primary"]:hover {
+        --color-accent: #89c6d3; /* A slightly darker shade for hover state */
+        background-color: var(--color-accent) !important;
+    }
+    /* THE SHIELD: Prevent blue underlines on all buttons and nav links */
+    [data-flux-button],
+    [data-flux-button] a,
+    .flux-button,
+    [data-flux-nav-link],
+    [data-flux-sidebar-item] {
+        text-decoration: none !important;
+    }
+
+    /* Ensure Nav/Sidebar text stays its original color (Inherit from parent) */
+    [data-flux-nav-link],
+    [data-flux-sidebar-item] {
+        color: inherit !important;
+    }
+
+    /* Flux Form Field Layouts */
+    [data-flux-field]:not(ui-radio, ui-checkbox) { @apply grid gap-2; }
+    [data-flux-label] { @apply !mb-0 !leading-tight; }
+
+    input:focus[data-flux-control],
+    textarea:focus[data-flux-control],
+    select:focus[data-flux-control] {
+        @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
+    }
 }
 
-/* Kill all dark-mode rings and pseudo-elements */
-[data-flux-button]::after {
-    display: none !important;
+@layer base {
+    /* Only layout and behavior here */
+    .jurisdiction-card {
+        @apply transition-all ;
+    }
+
+    .jurisdiction-card-editable {
+        @apply border border-zinc-200 rounded-lg pt-3 px-3 pb-6 min-h-[20px];
+    }
+
+    .jurisdiction-card-header {
+        @apply w-full mb-[36px];
+    }
+
 }
 
-/* Force light mode variables across all media queries */
+/* Force Flux's internal system to use light colors even in dark mode */
 @media (prefers-color-scheme: dark) {
     :root {
         --flux-bg: #ffffff !important;
@@ -61,41 +141,64 @@
         --color-white: #ffffff !important;
     }
 
+    [data-flux-button]::after {
+        display: none !important;
+    }
+
+    /* Target danger buttons first to lock white text */
     [data-flux-button][data-variant="danger"] {
         background-color: #ef4444 !important;
         color: #ffffff !important;
         --color-accent: #ef4444 !important;
         --color-accent-content: #ffffff !important;
     }
+
+    /* This targets the internal text/wrappers Flux uses for icons and labels */
+    [data-flux-button][data-variant="danger"] :is(span, div, svg, b, i) {
+        color: #ffffff !important;
+    }
+
+    /* Target all other buttons to have dark text */
+    [data-flux-button]:not([data-variant="danger"]) {
+        --color-accent: #9adbe8 !important;
+        --color-accent-content: #15121b !important;
+        color: #15121b !important;
+    }
 }
 
-/* Nav & Sidebar overrides */
+/* NAV & SIDEBAR */
 [data-flux-navbar-item], [data-flux-navlist-item], [data-flux-sidebar-item] {
     --color-zinc-800: #262626 !important;
     --color-zinc-100: #f5f5f5 !important;
     --color-accent: #262626 !important;
     --color-accent-content: #ffffff !important;
-    color: inherit !important;
-    text-decoration: none !important;
 }
 
 [data-flux-navbar-item][data-current], [data-flux-navlist-item][data-current] {
     border-color: #262626 !important;
+    background-color: transparent !important;
 }
 
-@layer base {
-    ul { @apply list-disc ml-5; }
-    ol { @apply list-decimal ml-5; }
-    *, ::after, ::before { border-color: var(--color-zinc-200, currentColor); }
+[data-flux-navbar-item]:hover, [data-flux-navlist-item]:hover {
+    background-color: #f5f5f5 !important;
+    color: #262626 !important;
+}
 
-    .rich-text a, .prose a {
-        color: #008179 !important;
-        font-weight: 600 !important;
-        text-decoration: underline !important;
-    }
+[data-flux-navbar] {
+    background-color: transparent !important;
+    --color-zinc-200: #e5e5e5 !important;
+}
 
-    [data-flux-field]:not(ui-radio, ui-checkbox) { @apply grid gap-2; }
-    [data-flux-label] { @apply !mb-0 !leading-tight; }
+/* GLOBAL DANGER OVERRIDE */
+[data-flux-button][data-variant="danger"] {
+    background-color: #ef4444 !important;
+    color: #ffffff !important;
+    --color-accent: #ef4444 !important;
+    --color-accent-content: #ffffff !important;
+}
+
+[data-flux-button][data-variant="danger"] * {
+    color: #ffffff !important;
 }
 
 [x-cloak] { display: none !important; }
