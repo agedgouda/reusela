@@ -1,6 +1,42 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="light">
+
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="light" style="color-scheme: light;">
     <head>
+        <script>
+    // 1. Force the browser rendering engine
+    document.documentElement.style.colorScheme = 'light';
+
+    // 2. Kill any cached Flux appearance settings
+    localStorage.removeItem('flux.appearance');
+
+    // 3. Monitor and block 'dark' class injection
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach(() => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+    // 4. Force standard dark mode media queries to resolve as light
+    const style = document.createElement('style');
+    style.innerHTML = `
+        @media (prefers-color-scheme: dark) {
+            :root, [data-flux-header], [data-flux-sidebar], [data-flux-navbar] {
+                --flux-bg: #ffffff !important;
+                --flux-fg: #18181b !important;
+                --flux-border: #e4e4e7 !important;
+                background-color: white !important;
+                color: #18181b !important;
+            }
+            .bg-zinc-50 { background-color: #fafafa !important; }
+            .bg-white { background-color: #ffffff !important; }
+            .text-black { color: #000000 !important; }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
         <meta name="color-scheme" content="light">
         @include('partials.head')
 
@@ -124,6 +160,7 @@
         });
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js" defer></script>
+
         @fluxScripts
         <x-notification-toast />
 

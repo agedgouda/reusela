@@ -21,6 +21,10 @@ body {
 
 
 @theme {
+    /* THIS IS THE FIX: It tells the Tailwind compiler to STOP generating
+       media queries and wait for a .dark class that you aren't providing. */
+    --config-dark-mode: selector;
+
     --font-sans: "sofia-pro", sans-serif;
 
     --color-zinc-50: #fafafa;
@@ -35,7 +39,6 @@ body {
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
 
-    /* Global Accent (Keep as neutral for nav/sidebar consistency) */
     --color-accent: var(--color-zinc-800);
     --color-accent-content: var(--color-zinc-800);
     --color-accent-foreground: var(--color-white);
@@ -123,10 +126,35 @@ body {
     .jurisdiction-card-header {
         @apply w-full mb-[36px];
     }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --flux-bg: #ffffff;
+            --flux-fg: #18181b; /* zinc-900 */
+            --flux-border: #e4e4e7; /* zinc-200 */
+        }
+    }
 }
 
+/* Force Flux to use Light Mode variables even if the browser asks for Dark */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --flux-bg: #ffffff !important;
+        --flux-fg: #171717 !important;
+        --flux-border: #e5e5e5 !important;
+
+        /* This kills the specific color-mix transparency you saw in the inspector */
+        --color-white: #000000 !important;
+    }
+
+    /* Force the specific background you used in Blade to stay light */
+    .bg-zinc-50 {
+        background-color: #fafafa !important;
+    }
+}
 
 
 [x-cloak] {
     display: none !important;
 }
+
