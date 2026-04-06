@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Support\HtmlLinks;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -12,7 +13,7 @@ class SaveSectionAction
     {
         $validator = Validator::make($input, [
             'section_title_id' => 'required|exists:section_titles,id',
-            'text'             => 'required|string',
+            'text' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -20,8 +21,9 @@ class SaveSectionAction
         }
 
         $data = $validator->validated();
+        $data['text'] = HtmlLinks::ensureNewTab($data['text']);
 
-        if (!$model->exists && $parent) {
+        if (! $model->exists && $parent) {
             $data[$foreignKey] = $parent->id;
         }
 

@@ -2,12 +2,14 @@
 
 namespace App\Livewire\Jurisdiction;
 
-use Livewire\Component;
 use App\Models\Jurisdiction;
+use App\Support\HtmlLinks;
+use Livewire\Component;
 
 class Edit extends Component
 {
     public Jurisdiction $jurisdiction;
+
     public string $text = '';
 
     public function mount(Jurisdiction $jurisdiction)
@@ -20,7 +22,7 @@ class Edit extends Component
     {
 
         $this->jurisdiction->update([
-            'general_information' => $this->text,
+            'general_information' => HtmlLinks::ensureNewTab($this->text),
         ]);
         $this->dispatch('toggleEdit', 'general');
     }

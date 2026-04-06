@@ -2,15 +2,19 @@
 
 namespace App\Livewire\Jurisdiction;
 
-use Livewire\Component;
 use App\Models\Section;
 use App\Models\SectionTitle;
+use App\Support\HtmlLinks;
+use Livewire\Component;
 
 class EditSection extends Component
 {
     public string $jurisdictionId;
+
     public Section $section;
+
     public ?string $newSectionTitleId = null;
+
     public ?string $newSectionText = null;
 
     public $availableSectionTitles = [];
@@ -29,13 +33,13 @@ class EditSection extends Component
             $this->newSectionText = $this->section->text;
         }
 
-       $this->refreshAvailableTitles();
+        $this->refreshAvailableTitles();
 
     }
 
     public function cancel(): void
     {
-         $this->closeEditor();
+        $this->closeEditor();
     }
 
     public function save($addNew = false)
@@ -43,7 +47,7 @@ class EditSection extends Component
         if ($this->section->exists) {
             // Editing an existing section
             $this->section->update([
-                'text' => $this->newSectionText,
+                'text' => HtmlLinks::ensureNewTab($this->newSectionText ?? ''),
             ]);
         } else {
             // Adding a new section
@@ -55,7 +59,7 @@ class EditSection extends Component
             Section::create([
                 'jurisdiction_id' => $this->jurisdictionId,
                 'section_title_id' => $this->newSectionTitleId,
-                'text' => $this->newSectionText,
+                'text' => HtmlLinks::ensureNewTab($this->newSectionText ?? ''),
             ]);
         }
 
@@ -76,7 +80,6 @@ class EditSection extends Component
             $this->refreshAvailableTitles();
         }
     }
-
 
     public function render()
     {
@@ -102,5 +105,4 @@ class EditSection extends Component
             ->orderBy('sort_order')
             ->get();
     }
-
 }
