@@ -22,16 +22,39 @@
         {{-- 2. Header --}}
         <div class="flex flex-col sm:flex-row sm:items-center gap-4 w-[350px] md:w-full sm:justify-between">
 
-            <div class="text-[#15121b] text-left font-sans text-[40px]/[36px] tracking-[-0.05em] font-bold">
-                @if($jurisdiction->is_system_default)
-                    Default Information
-                @else
-                    You're in
-                    {{ $jurisdiction->name !== 'Unincorporated'
-                        ? "the City of $jurisdiction->name!"
-                        : "$jurisdiction->name LA County!" }}
-                @endif
-            </div>
+            @if($editingName)
+                <div class="flex flex-col gap-1 w-full max-w-sm">
+                    <div class="flex items-center gap-2">
+                        <flux:input
+                            wire:model="jurisdictionName"
+                            placeholder="Enter jurisdiction name"
+                            class="text-[#15121b]"
+                            autofocus
+                        />
+                        <flux:button
+                            wire:click="saveJurisdictionName"
+                            variant="primary"
+                            class="!bg-[#9adbe8] !text-[#15121b] hover:!bg-[#89c6d3] shrink-0"
+                        >
+                            Save Name
+                        </flux:button>
+                    </div>
+                    @error('jurisdictionName')
+                        <span class="text-red-600 text-sm">{{ $message }}</span>
+                    @enderror
+                </div>
+            @else
+                <div class="text-[#15121b] text-left font-sans text-[40px]/[36px] tracking-[-0.05em] font-bold">
+                    @if($jurisdiction->is_system_default)
+                        Default Information
+                    @else
+                        You're in
+                        {{ $jurisdiction->name !== 'Unincorporated'
+                            ? "the City of $jurisdiction->name!"
+                            : "$jurisdiction->name LA County!" }}
+                    @endif
+                </div>
+            @endif
             {{-- Add Section button --}}
             @if($editable && !$showAddSectionForm && $showAddSectionButton)
                 <div class="sm:ml-auto">

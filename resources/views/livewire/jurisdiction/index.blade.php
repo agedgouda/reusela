@@ -50,6 +50,41 @@
     <div class="mt-4">
         {{ $jurisdictions->links() }}
     </div>
+
+    <div class="mt-4">
+        <flux:modal.trigger name="add-jurisdiction">
+            <flux:button variant="primary" class="!bg-[#9adbe8] !text-[#15121b] hover:!bg-[#89c6d3]">
+                Add Jurisdiction
+            </flux:button>
+        </flux:modal.trigger>
+    </div>
+
+    <flux:modal name="add-jurisdiction" :show="$errors->has('newJurisdictionName')" focusable class="min-w-[22rem]">
+        <div class="space-y-6">
+            <flux:heading size="lg">Add Jurisdiction</flux:heading>
+
+            <div class="flex flex-col gap-1">
+                <flux:input
+                    wire:model="newJurisdictionName"
+                    placeholder="Enter jurisdiction name"
+                    wire:keydown.enter="createJurisdiction"
+                    autofocus
+                />
+                @error('newJurisdictionName')
+                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="flex justify-end gap-2">
+                <flux:modal.close>
+                    <flux:button variant="ghost" wire:click="cancelCreate">Cancel</flux:button>
+                </flux:modal.close>
+                <flux:button wire:click="createJurisdiction" variant="primary" class="!bg-[#9adbe8] !text-[#15121b] hover:!bg-[#89c6d3]">
+                    Save
+                </flux:button>
+            </div>
+        </div>
+    </flux:modal>
     @endif
     @if($tab === 'content')
     <div class="max-w-4xl">
