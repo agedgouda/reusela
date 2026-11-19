@@ -28,6 +28,10 @@
             </div>
         </div>
 
+        @error('address')
+            <p class="mt-2 text-sm text-red-600" role="alert">{{ $message }}</p>
+        @enderror
+
         {{-- SECTION 2: SMOOTH LOADING & RESULTS --}}
         <div x-show="!showInput" x-cloak x-transition.opacity.duration.400ms>
             <div class="w-full">

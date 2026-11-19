@@ -32,6 +32,9 @@ return [
         'api_key' => env('GOOGLE_MAPS_API_KEY'),
     ],
 
+    'google_civic' => [
+        'api_key' => env('GOOGLE_CIVIC_API_KEY', env('GOOGLE_MAPS_API_KEY')),
+    ],
 
     'slack' => [
         'notifications' => [

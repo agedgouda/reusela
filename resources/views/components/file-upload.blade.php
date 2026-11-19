@@ -49,7 +49,7 @@
         @endif
 
         {{-- Validation error --}}
-        @error($attributes->wire('model')) <p class="text-red-600 mt-1">{{ $message }}</p> @enderror
+        @error($attributes->wire('model')->value()) <p class="text-red-600 mt-1">{{ $message }}</p> @enderror
     </div>
 </div>
 

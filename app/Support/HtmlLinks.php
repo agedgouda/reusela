@@ -20,10 +20,10 @@ class HtmlLinks
         $dom = new DOMDocument('1.0', 'UTF-8');
         libxml_use_internal_errors(true);
 
-        // The meta charset tag forces DOMDocument to treat content as UTF-8,
+        // The XML encoding hint forces DOMDocument to treat content as UTF-8,
         // preventing it from mangling multibyte characters like curly quotes.
         $dom->loadHTML(
-            '<meta charset="UTF-8"><div>'.$html.'</div>',
+            '<?xml encoding="UTF-8"><div>'.$html.'</div>',
             LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
         );
 
@@ -37,6 +37,10 @@ class HtmlLinks
         // Extract innerHTML of the wrapper div
         $wrapper = $dom->getElementsByTagName('div')->item(0);
         $result = '';
+
+        if (! $wrapper) {
+            return $result;
+        }
 
         foreach ($wrapper->childNodes as $child) {
             $result .= $dom->saveHTML($child);

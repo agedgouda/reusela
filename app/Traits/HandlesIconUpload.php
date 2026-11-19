@@ -2,38 +2,46 @@
 
 namespace App\Traits;
 
-use Illuminate\Support\Str;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 trait HandlesIconUpload
 {
     /**
-     * Store a new icon file, optionally deleting an old one.
+     * Validation rules for an uploaded icon.
      *
-     * @param \Livewire\TemporaryUploadedFile|null $newIcon
-     * @param string|null $oldIcon
-     * @return string|null The stored filename or null
+     * @return array<int, string>
      */
-    public function saveIcon($newIcon, $oldIcon = null)
+    protected function iconRules(): array
     {
-        if (!$newIcon) {
-            return $oldIcon; // Nothing new uploaded, keep old
+        return ['image', 'mimes:png,jpg,jpeg,webp', 'max:2048'];
+    }
+
+    /**
+     * Store a new icon under a server-generated name, deleting the old one if replaced.
+     *
+     * The stored name is a random hash with an extension derived from the file's
+     * contents, never the client-supplied filename, so an upload cannot be saved
+     * with an executable extension or overwrite another file.
+     *
+     * @return string|null The stored filename (relative to the icons directory) or null
+     */
+    public function saveIcon(?UploadedFile $newIcon, ?string $oldIcon = null): ?string
+    {
+        if (! $newIcon) {
+            return $oldIcon;
         }
 
-        $originalName = $newIcon->getClientOriginalName();
-        $safeName = $originalName;
+        $storedPath = $newIcon->store('icons', 'public');
 
-        // Avoid collisions
-        if (file_exists(public_path("icons/$safeName"))) {
-            $safeName = Str::uuid() . '_' . $originalName;
+        if ($storedPath === false) {
+            throw new \RuntimeException('The icon could not be stored.');
         }
 
-        $newIcon->storeAs('icons', $safeName, 'public');
-
-        // Delete old icon if it exists
-        if ($oldIcon && file_exists(public_path("icons/$oldIcon"))) {
-            @unlink(public_path("icons/$oldIcon"));
+        if ($oldIcon) {
+            Storage::disk('public')->delete('icons/'.basename($oldIcon));
         }
 
-        return $safeName;
+        return basename($storedPath);
     }
 }

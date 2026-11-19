@@ -2,23 +2,24 @@
 
 namespace App\Livewire\SectionTitle;
 
-use Livewire\Component;
-use Livewire\WithFileUploads;
 use App\Models\SectionTitle;
 use App\Traits\HandlesIconUpload;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class Create extends Component
 {
-    use WithFileUploads, HandlesIconUpload;
+    use HandlesIconUpload, WithFileUploads;
 
     public $title = '';
+
     public $icon;
 
     public function save()
     {
         $this->validate([
             'title' => 'required|string|max:255',
-            'icon' => 'required|image|max:2048',
+            'icon' => ['required', ...$this->iconRules()],
         ]);
 
         $nextSortOrder = SectionTitle::max('sort_order') + 1;

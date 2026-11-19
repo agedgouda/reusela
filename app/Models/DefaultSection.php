@@ -3,12 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DefaultSection extends Model
 {
     protected $fillable = ['section_title_id', 'text'];
 
-    public function sectionTitle()
+    /**
+     * @return BelongsTo<SectionTitle, $this>
+     */
+    public function sectionTitle(): BelongsTo
     {
         return $this->belongsTo(SectionTitle::class);
     }

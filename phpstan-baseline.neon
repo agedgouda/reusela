@@ -1,0 +1,25 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Actions/SaveSectionAction.php
+
+		-
+			message: '#^Call to function method_exists\(\) with \$this\(App\\Livewire\\Jurisdiction\\Show\) and ''refreshSections'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Livewire/Concerns/HandlesSectionDeletions.php
+
+		-
+			message: '#^Property App\\Livewire\\Jurisdiction\\Show\:\:\$showGeneralInfoEdit \(bool\) on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.property
+			count: 1
+			path: app/Livewire/Concerns/ManagesSectionUI.php
+
+		-
+			message: '#^Property App\\Livewire\\Jurisdiction\\EditSection\:\:\$newSectionTitleId \(string\|null\) does not accept int\<0, max\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Livewire/Jurisdiction/EditSection.php

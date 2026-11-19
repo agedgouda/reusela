@@ -2,20 +2,27 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Casts\SanitizedHtml;
+use Database\Factories\JurisdictionFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
 class Jurisdiction extends Model
 {
+    /** @use HasFactory<JurisdictionFactory> */
     use HasFactory, HasUuids;
 
     /**
      * Set the primary key type to UUID string.
      */
     protected $keyType = 'string';
+
     public $incrementing = false;
 
     /**
@@ -29,6 +36,16 @@ class Jurisdiction extends Model
         'general_information',
         'is_system_default',
     ];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'general_information' => SanitizedHtml::class,
+        ];
+    }
 
     /**
      * The "booted" method handles Global Scopes and Model Events.
@@ -55,12 +72,18 @@ class Jurisdiction extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function county()
+    /**
+     * @return BelongsTo<County, $this>
+     */
+    public function county(): BelongsTo
     {
         return $this->belongsTo(County::class, 'county_id');
     }
 
-    public function sections()
+    /**
+     * @return HasMany<Section, $this>
+     */
+    public function sections(): HasMany
     {
         return $this->hasMany(Section::class);
     }
@@ -74,14 +97,15 @@ class Jurisdiction extends Model
     /**
      * Fetches the hidden Master record by bypassing the Global Scope.
      */
-    public function getDefaultRecord()
+    public function getDefaultRecord(): ?self
     {
-        return Cache::tags(['jurisdictions'])->rememberForever('jurisdiction_master_record', function() {
-            $record = self::withoutGlobalScope('excludeDefault')
+        $record = Cache::tags(['jurisdictions'])->rememberForever('jurisdiction_master_record', function () {
+            return self::withoutGlobalScope('excludeDefault')
                 ->where('is_system_default', true)
                 ->first();
-            return $record;
         });
+
+        return $record instanceof self ? $record : null;
     }
 
     /*
@@ -94,14 +118,13 @@ class Jurisdiction extends Model
      * Accessor: $jurisdiction->display_general_info
      * Returns local content if available, otherwise returns the master default.
      */
-    public function getDisplayGeneralInfoAttribute()
+    public function getDisplayGeneralInfoAttribute(): string
     {
-        if (!empty($this->general_information)) {
+        if (! empty($this->general_information)) {
             return $this->general_information;
         }
 
-        $master = $this->getDefaultRecord();
-        return $master ? $master->general_information : '';
+        return $this->getDefaultRecord()->general_information ?? '';
     }
 
     /**
@@ -109,41 +132,34 @@ class Jurisdiction extends Model
      * Returns local sections if they exist, otherwise returns master sections.
      * All sections are automatically sorted by the Title's sort_order.
      */
-    public function getDisplaySectionsAttribute()
+    /**
+     * @return Collection<int, Section>
+     */
+    public function getDisplaySectionsAttribute(): Collection
     {
         if ($this->sections()->exists()) {
-            return $this->sections()
-                ->with('sectionTitle')
-                ->get()
-                ->sortBy(fn($s) => $s->sectionTitle->sort_order ?? 0);
+            return $this->sortedSections($this);
         }
 
         // Wrap this in tags so the flush command can find it
-        return Cache::tags(['jurisdictions'])->rememberForever('master_sections_collection', function() {
+        /** @var Collection<int, Section> $masterSections */
+        $masterSections = Cache::tags(['jurisdictions'])->rememberForever('master_sections_collection', function () {
             $master = $this->getDefaultRecord();
 
-            return $master
-                ? $master->sections()
-                    ->with('sectionTitle')
-                    ->get()
-                    ->sortBy(fn($s) => $s->sectionTitle->sort_order ?? 0)
-                : collect();
+            return $master ? $this->sortedSections($master) : collect();
         });
-    }
-    /*
-    |--------------------------------------------------------------------------
-    | Scopes
-    |--------------------------------------------------------------------------
-    */
 
-    public function scopeFilter(Builder $query, array $filters): Builder
+        return $masterSections;
+    }
+
+    /**
+     * @return Collection<int, Section>
+     */
+    private function sortedSections(self $jurisdiction): Collection
     {
-        foreach ($filters as $filter => $value) {
-            $filterClass = '\\App\\Filters\\' . ucfirst($filter) . 'Filter';
-            if (class_exists($filterClass) && !is_null($value)) {
-                (new $filterClass)($query, $value);
-            }
-        }
-        return $query;
+        return $jurisdiction->sections()
+            ->with('sectionTitle')
+            ->get()
+            ->sortBy(fn (Section $section) => $section->sectionTitle->sort_order ?? 0);
     }
 }

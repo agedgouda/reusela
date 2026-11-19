@@ -2,12 +2,13 @@
 
 namespace App\Livewire\Jurisdiction;
 
+use App\Filters\NameFilter;
 use App\Models\County;
 use App\Models\Jurisdiction;
-use App\Services\SortingService;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -32,16 +33,6 @@ class Index extends Component
     ];
 
     /**
-     * Toggle or set sorting for a specific field.
-     */
-    public function sortBy(string $field): void
-    {
-        [$this->sortField, $this->sortDirection] = SortingService::handleSort(
-            $this->sortField, $this->sortDirection, $field
-        );
-    }
-
-    /**
      * Query the filtered and sorted jurisdictions.
      */
     private function getFilteredJurisdictions()
@@ -49,7 +40,7 @@ class Index extends Component
         return app(Pipeline::class)
             ->send(Jurisdiction::query()->withCount('sections'))
             ->through([
-                new \App\Filters\NameFilter($this->filter),
+                new NameFilter($this->filter),
             ])
             ->thenReturn()
             ->orderBy($this->sortField, $this->sortDirection)
@@ -94,7 +85,7 @@ class Index extends Component
     public function getDefaultJurisdictionProperty()
     {
         // Use the method we added to the Model to bypass the Global Scope
-        return \App\Models\Jurisdiction::withoutGlobalScope('excludeDefault')
+        return Jurisdiction::withoutGlobalScope('excludeDefault')
             ->where('is_system_default', true)
             ->first();
     }

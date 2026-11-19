@@ -2,15 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Casts\SanitizedHtml;
+use Database\Factories\SectionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Cache;
 
 class Section extends Model
 {
+    /** @use HasFactory<SectionFactory> */
     use HasFactory;
 
-    // Keep this; it ensures the Jurisdiction's 'updated_at' changes
+    /**
+     * Keep this; it ensures the Jurisdiction's 'updated_at' changes.
+     *
+     * @var list<string>
+     */
     protected $touches = ['jurisdiction'];
 
     protected $fillable = [
@@ -19,22 +27,35 @@ class Section extends Model
         'text',
     ];
 
-    protected static function booted()
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
     {
-        static::saved(function ($section) {
+        return [
+            'text' => SanitizedHtml::class,
+        ];
+    }
 
-            // Check the driver - if this says 'file', tags will NOT work
-            $driver = config('cache.default');
+    protected static function booted(): void
+    {
+        static::saved(function () {
             Cache::tags(['jurisdictions'])->flush();
         });
     }
 
-    public function jurisdiction()
+    /**
+     * @return BelongsTo<Jurisdiction, $this>
+     */
+    public function jurisdiction(): BelongsTo
     {
         return $this->belongsTo(Jurisdiction::class, 'jurisdiction_id', 'id');
     }
 
-    public function sectionTitle()
+    /**
+     * @return BelongsTo<SectionTitle, $this>
+     */
+    public function sectionTitle(): BelongsTo
     {
         return $this->belongsTo(SectionTitle::class);
     }

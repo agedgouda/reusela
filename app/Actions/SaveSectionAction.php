@@ -9,6 +9,9 @@ use Illuminate\Validation\ValidationException;
 
 class SaveSectionAction
 {
+    /**
+     * @param  array<string, mixed>  $input
+     */
     public function execute(Model $model, array $input, ?Model $parent = null, string $foreignKey = 'jurisdiction_id'): Model
     {
         $validator = Validator::make($input, [
@@ -24,7 +27,7 @@ class SaveSectionAction
         $data['text'] = HtmlLinks::ensureNewTab($data['text']);
 
         if (! $model->exists && $parent) {
-            $data[$foreignKey] = $parent->id;
+            $data[$foreignKey] = $parent->getKey();
         }
 
         $model->fill($data)->save();

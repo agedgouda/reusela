@@ -33,7 +33,7 @@ class NormalizeSectionLinks extends Command
         $updated = 0;
 
         foreach ($sections as $section) {
-            $normalized = HtmlLinks::ensureNewTab($section->text);
+            $normalized = HtmlLinks::ensureNewTab((string) $section->text);
 
             if ($normalized !== $section->text) {
                 $section->update(['text' => $normalized]);
@@ -56,7 +56,7 @@ class NormalizeSectionLinks extends Command
         $updated = 0;
 
         foreach ($jurisdictions as $jurisdiction) {
-            $normalized = HtmlLinks::ensureNewTab($jurisdiction->general_information);
+            $normalized = HtmlLinks::ensureNewTab((string) $jurisdiction->general_information);
 
             if ($normalized !== $jurisdiction->general_information) {
                 $jurisdiction->update(['general_information' => $normalized]);

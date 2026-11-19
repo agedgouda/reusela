@@ -2,21 +2,23 @@
 
 namespace App\Filters;
 
+use App\Models\Jurisdiction;
 use Closure;
+use Illuminate\Database\Eloquent\Builder;
 
 class NameFilter
 {
-    protected $value;
+    public function __construct(protected ?string $value) {}
 
-    public function __construct($value)
+    /**
+     * @param  Builder<Jurisdiction>  $query
+     * @param  Closure(Builder<Jurisdiction>): Builder<Jurisdiction>  $next
+     * @return Builder<Jurisdiction>
+     */
+    public function handle(Builder $query, Closure $next): Builder
     {
-        $this->value = $value;
-    }
-
-    public function handle($query, Closure $next)
-    {
-        if (!is_null($this->value)) {
-            $query->where('name', 'like', '%' . $this->value . '%');
+        if (! is_null($this->value)) {
+            $query->where('name', 'like', '%'.$this->value.'%');
         }
 
         return $next($query);

@@ -2,17 +2,19 @@
 
 namespace App\Livewire\SectionTitle;
 
-use Livewire\Component;
-use Livewire\WithFileUploads;
 use App\Models\SectionTitle;
 use App\Traits\HandlesIconUpload;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class Edit extends Component
 {
-    use WithFileUploads, HandlesIconUpload;
+    use HandlesIconUpload, WithFileUploads;
 
     public SectionTitle $sectionTitle;
+
     public $title;
+
     public $icon;
 
     public function mount(SectionTitle $sectionTitle)
@@ -26,7 +28,7 @@ class Edit extends Component
     {
         $this->validate([
             'title' => 'required|string|max:255',
-            'icon' => 'nullable|image|max:2048',
+            'icon' => ['nullable', ...$this->iconRules()],
         ]);
 
         $filename = $this->saveIcon($this->icon, $this->sectionTitle->icon);
