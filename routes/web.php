@@ -1,37 +1,37 @@
 <?php
 
+use App\Http\Controllers\AddressSuggestionController;
+use App\Livewire\Jurisdiction\Index as JurisdictionIndex;
+use App\Livewire\Jurisdiction\Show as JurisdictionShow;
+use App\Livewire\Search\Index as SearchIndex;
+use App\Livewire\SectionTitle\Create as SectionTitleCreate;
+use App\Livewire\SectionTitle\Edit as SectionTitleEdit;
+use App\Livewire\SectionTitle\Index as SectionTitleIndex;
+use App\Livewire\SectionTitle\Show as SectionTitleShow;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\TwoFactor;
-use Illuminate\Support\Facades\Route;
-use Laravel\Fortify\Features;
-
-use App\Livewire\Jurisdiction\Index as JurisdictionIndex;
-use App\Livewire\Jurisdiction\Show as JurisdictionShow;
-
-use App\Livewire\SectionTitle\Index as SectionTitleIndex;
-use App\Livewire\SectionTitle\Show as SectionTitleShow;
-use App\Livewire\SectionTitle\Create as SectionTitleCreate;
-use App\Livewire\SectionTitle\Edit as SectionTitleEdit;
-
-
-use App\Livewire\User\Index as UserIndex;
-use App\Livewire\User\Show as UserShow;
 use App\Livewire\User\Create as UserCreate;
 use App\Livewire\User\Edit as UserEdit;
-
-use App\Livewire\Search\Index as SearchIndex;
+use App\Livewire\User\Index as UserIndex;
+use App\Livewire\User\Show as UserShow;
+use Illuminate\Support\Facades\Route;
+use Laravel\Fortify\Features;
 
 Route::get('/', function () {
     return redirect('/login');
 });
 
-//Route::get('/search', SearchIndex::class)->name('search.index');
+// Route::get('/search', SearchIndex::class)->name('search.index');
 
 Route::get('/search', function () {
     return view('search-page'); // a Blade file you create
 })->name('search.index');
+
+Route::get('/search/suggestions', AddressSuggestionController::class)
+    ->middleware('throttle:address-suggestions')
+    ->name('search.suggestions');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
@@ -56,23 +56,23 @@ Route::middleware(['auth'])->group(function () {
         )
         ->name('two-factor.show');
 
-        Route::prefix('jurisdictions')->group(function () {
-            Route::get('/', JurisdictionIndex::class)->name('jurisdiction.index');
-            Route::get('/{jurisdiction}', JurisdictionShow::class)->name('jurisdiction.show');
-        });
+    Route::prefix('jurisdictions')->group(function () {
+        Route::get('/', JurisdictionIndex::class)->name('jurisdiction.index');
+        Route::get('/{jurisdiction}', JurisdictionShow::class)->name('jurisdiction.show');
+    });
 
-        Route::prefix('section-title')->name('section-title.')->group(function () {
-            Route::get('/', SectionTitleIndex::class)->name('index');
-            Route::get('/create', SectionTitleCreate::class)->name('create');
-            Route::get('/{sectionTitle}', SectionTitleShow::class)->name('show');
-            Route::get('/{sectionTitle}/edit', SectionTitleEdit::class)->name('edit');
-        });
+    Route::prefix('section-title')->name('section-title.')->group(function () {
+        Route::get('/', SectionTitleIndex::class)->name('index');
+        Route::get('/create', SectionTitleCreate::class)->name('create');
+        Route::get('/{sectionTitle}', SectionTitleShow::class)->name('show');
+        Route::get('/{sectionTitle}/edit', SectionTitleEdit::class)->name('edit');
+    });
 
-        Route::prefix('user')->name('user.')->group(function () {
-            Route::get('/', UserIndex::class)->name('index');
-            Route::get('/create', UserCreate::class)->name('create');
-            Route::get('/{user}', UserShow::class)->name('show');
-            Route::get('/{user}/edit', UserEdit::class)->name('edit');
-        });
+    Route::prefix('user')->name('user.')->group(function () {
+        Route::get('/', UserIndex::class)->name('index');
+        Route::get('/create', UserCreate::class)->name('create');
+        Route::get('/{user}', UserShow::class)->name('show');
+        Route::get('/{user}/edit', UserEdit::class)->name('edit');
+    });
 
 });

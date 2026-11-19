@@ -1,64 +1,50 @@
-export default function addressAutocomplete() {
+/**
+ * Address search box. Suggestions come from a JSON endpoint and place details from the
+ * Livewire component, both on the server, so no Google API key is ever sent to the browser.
+ */
+export default function addressAutocomplete(suggestionsUrl) {
     return {
         suggestions: [],
-        service: null,
-        sessionToken: null,
         showInput: true,
-
-        async initAutocompleteService() {
-            if (this.service) return;
-            try {
-                if (typeof google === 'undefined') return;
-                const { AutocompleteSessionToken, AutocompleteSuggestion } = await google.maps.importLibrary("places");
-                this.service = AutocompleteSuggestion;
-                this.sessionToken = new AutocompleteSessionToken();
-            } catch (e) { console.error(e); }
-        },
+        loading: false,
+        latestQuery: '',
 
         async getSuggestions(query) {
-            if (query.length < 3) { this.suggestions = []; return; }
-            await this.initAutocompleteService();
-            if (!this.sessionToken) {
-                const { AutocompleteSessionToken } = await google.maps.importLibrary("places");
-                this.sessionToken = new AutocompleteSessionToken();
+            this.latestQuery = query;
+
+            if (query.trim().length < 3) {
+                this.suggestions = [];
+                return;
             }
+
             try {
-                const { suggestions } = await this.service.fetchAutocompleteSuggestions({
-                    input: query,
-                    sessionToken: this.sessionToken,
-                    locationRestriction: { north: 34.8233, south: 33.7037, east: -117.6458, west: -118.9448 }
+                const response = await fetch(`${suggestionsUrl}?query=${encodeURIComponent(query)}`, {
+                    headers: { Accept: 'application/json' },
+                    credentials: 'same-origin',
                 });
-                this.suggestions = suggestions.map(s => ({
-                    id: s.placePrediction.placeId,
-                    label: s.placePrediction.text.text,
-                    raw: s.placePrediction
-                }));
-            } catch (e) { this.suggestions = []; }
+                const suggestions = response.ok ? await response.json() : [];
+
+                // Ignore responses for queries the user has already typed past.
+                if (query === this.latestQuery) {
+                    this.suggestions = Array.isArray(suggestions) ? suggestions : [];
+                }
+            } catch (e) {
+                this.suggestions = [];
+            }
         },
 
         async selectPlace(suggestion) {
             this.suggestions = [];
             this.showInput = false; // Swap UI immediately
+            this.loading = true;
 
             try {
-                const place = suggestion.raw.toPlace();
-                await place.fetchFields({ fields: ['addressComponents'] });
-                const components = place.addressComponents;
-
-                const getComp = (t, short = false) => {
-                    const c = components.find(comp => comp.types.includes(t));
-                    return c ? (short ? c.shortText : c.longText) : '';
-                };
-
-                const addressData = {
-                    location: `${getComp('street_number')} ${getComp('route')}`,
-                    locality: getComp('locality'),
-                    state: getComp('administrative_area_level_1', true),
-                    postal_code: getComp('postal_code'),
-                };
-
-                Livewire.dispatch('address-updated', { address: addressData });
-            } catch (e) { this.resetUI(); }
+                await this.$wire.selectPlace(suggestion.id);
+            } catch (e) {
+                this.resetUI();
+            } finally {
+                this.loading = false;
+            }
         },
 
         resetUI() {
@@ -75,7 +61,7 @@ export default function addressAutocomplete() {
             // Tell Livewire to reset the server-side state
             Livewire.dispatch('address-updated', { address: null });
 
-            // Optional: Focus the input again so the user can start typing immediately
+            // Focus the input again so the user can start typing immediately
             this.$nextTick(() => {
                 if (input) input.focus();
             });

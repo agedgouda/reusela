@@ -3,6 +3,7 @@
 namespace App\Livewire\Search;
 
 use App\Models\Jurisdiction;
+use App\Support\GooglePlaces;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -12,7 +13,6 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use RuntimeException;
 
 class Index extends Component
 {
@@ -32,6 +32,41 @@ class Index extends Component
 
     #[Locked]
     public bool $isProcessing = false;
+
+    /**
+     * Look up the chosen suggestion's address server-side, then find its jurisdiction.
+     */
+    public function selectPlace(string $placeId): void
+    {
+        $this->resetErrorBag();
+
+        if (! preg_match(GooglePlaces::PLACE_ID_PATTERN, $placeId)) {
+            $this->failLookup('Please choose an address from the suggestions.');
+
+            return;
+        }
+
+        $apiKey = GooglePlaces::configuredApiKey();
+
+        if ($apiKey === null) {
+            $this->failLookup('Address lookup is temporarily unavailable. Please try again later.');
+
+            return;
+        }
+
+        try {
+            $address = (new GooglePlaces($apiKey))->addressFor($placeId, GooglePlaces::sessionToken());
+        } catch (\Exception $e) {
+            report($e);
+            $this->failLookup('Address lookup is temporarily unavailable. Please try again later.');
+
+            return;
+        } finally {
+            GooglePlaces::rotateSessionToken();
+        }
+
+        $this->addressSelected($address);
+    }
 
     /**
      * @param  array{location?: mixed, locality?: mixed, state?: mixed, postal_code?: mixed}|null  $address
@@ -60,10 +95,9 @@ class Index extends Component
             return;
         }
 
-        $civicApiKey = config('services.google_civic.api_key');
+        $civicApiKey = GooglePlaces::configuredApiKey();
 
-        if (! is_string($civicApiKey) || $civicApiKey === '') {
-            report(new RuntimeException('GOOGLE_CIVIC_API_KEY is not configured.'));
+        if ($civicApiKey === null) {
             $this->failLookup('Address lookup is temporarily unavailable. Please try again later.');
 
             return;
@@ -144,8 +178,6 @@ class Index extends Component
 
     public function render(): View
     {
-        return view('livewire.search.index', [
-            'google_maps_api_key' => config('services.google_maps.api_key'),
-        ]);
+        return view('livewire.search.index');
     }
 }

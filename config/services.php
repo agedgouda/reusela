@@ -28,12 +28,12 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    'google_maps' => [
+    /*
+     * One server-only key for Places (New) and Civic Information. It is never sent to the
+     * browser, so restrict it in Google Cloud to the server's IP and to those two APIs.
+     */
+    'google' => [
         'api_key' => env('GOOGLE_MAPS_API_KEY'),
-    ],
-
-    'google_civic' => [
-        'api_key' => env('GOOGLE_CIVIC_API_KEY'),
     ],
 
     'slack' => [

@@ -1,9 +1,7 @@
-<div x-data="addressAutocomplete()"
+<div x-data="addressAutocomplete(@js(route('search.suggestions')))"
      x-init="showInput = {{ $address ? 'false' : 'true' }}; loading = false;"
      @@error-processing.window="resetUI();"
      @@jurisdiction-not-found.window="resetUI();">
-
-    <script async src="https://maps.googleapis.com/maps/api/js?key={{ $google_maps_api_key }}&libraries=places&v=weekly&loading=async"></script>
 
     <div class="flex flex-col min-h-[250px] relative">
 
@@ -16,7 +14,7 @@
                         type="text"
                         class="text-lg py-3 px-4 block w-full bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                         placeholder="Enter Address"
-                        @input.debounce.300ms="getSuggestions($event.target.value)"
+                        @input.debounce.200ms="getSuggestions($event.target.value)"
                         autocomplete="off">
 
                     <div x-show="suggestions.length > 0" class="absolute z-50 w-full bg-white border border-gray-200 rounded-b-lg shadow-xl mt-1 overflow-hidden">
