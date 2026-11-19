@@ -313,6 +313,30 @@ describe('selecting a suggested place', function () {
     });
 });
 
+it('caches the jurisdiction id rather than the model', function () {
+    fakeCivicApi();
+    $jurisdiction = Jurisdiction::factory()->create(['name' => 'Burbank']);
+
+    Livewire::test(Index::class)->call('addressSelected', searchAddress());
+
+    $cached = Cache::tags(['jurisdictions'])->get('civic_lookup_v2_'.Str::slug('100 Main St, Burbank, CA 91502'));
+
+    expect($cached)->toBe([
+        'city' => 'Burbank',
+        'address_label' => 'City of Burbank',
+        'jurisdiction_id' => $jurisdiction->id,
+    ]);
+});
+
+it('shows no jurisdiction when the cached city has none', function () {
+    fakeCivicApi();
+
+    Livewire::test(Index::class)
+        ->call('addressSelected', searchAddress())
+        ->assertSet('city', 'Burbank')
+        ->assertSet('jurisdiction', null);
+});
+
 it('resets the result when the address is cleared', function () {
     fakeCivicApi();
     Jurisdiction::factory()->create(['name' => 'Burbank']);

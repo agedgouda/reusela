@@ -121,11 +121,13 @@ class Index extends Component
                 $address['location'], $address['locality'], $address['state'], $address['postal_code'] ?? ''
             );
 
-            $cacheKey = 'civic_lookup_'.Str::slug($formattedAddress);
+            $cacheKey = 'civic_lookup_v2_'.Str::slug($formattedAddress);
 
             /**
              * We use Cache::tags(['jurisdictions']) so that this entire result
-             * can be cleared whenever a Jurisdiction model is updated.
+             * can be cleared whenever a Jurisdiction model is updated. Only plain
+             * values are cached (the jurisdiction's id, not the model), because
+             * Laravel 13 no longer unserializes objects from the cache by default.
              */
             $data = Cache::tags(['jurisdictions'])->remember($cacheKey, now()->addDays(7), function () use ($formattedAddress, $address, $civicApiKey) {
                 $response = Http::timeout(5)->get('https://www.googleapis.com/civicinfo/v2/divisionsByAddress', [
@@ -140,14 +142,10 @@ class Index extends Component
 
                     $city = $hasPlace ? $address['locality'] : 'Unincorporated';
 
-                    // We fetch the model inside the cache closure so the
-                    // entire object is stored in Redis.
-                    $model = Jurisdiction::where('name', $city)->first();
-
                     return [
                         'city' => $city,
                         'address_label' => $hasPlace ? "City of {$city}" : 'Unincorporated LA County',
-                        'jurisdiction' => $model,
+                        'jurisdiction_id' => Jurisdiction::where('name', $city)->value('id'),
                     ];
                 }
 
@@ -157,7 +155,9 @@ class Index extends Component
             if ($data) {
                 $this->city = is_string($data['city']) ? $data['city'] : null;
                 $this->address = $data['address_label'];
-                $this->jurisdiction = $data['jurisdiction'];
+                $this->jurisdiction = is_string($data['jurisdiction_id'])
+                    ? Jurisdiction::find($data['jurisdiction_id'])
+                    : null;
             }
 
         } catch (\Exception $e) {

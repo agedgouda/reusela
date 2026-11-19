@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Casts\SanitizedHtml;
 use Database\Factories\JurisdictionFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -99,13 +100,18 @@ class Jurisdiction extends Model
      */
     public function getDefaultRecord(): ?self
     {
-        $record = Cache::tags(['jurisdictions'])->rememberForever('jurisdiction_master_record', function () {
+        /*
+         * Only the raw attributes are cached, not the model, because Laravel 13
+         * no longer unserializes objects from the cache by default.
+         */
+        $attributes = Cache::tags(['jurisdictions'])->rememberForever('jurisdiction_master_record_attributes', function () {
             return self::withoutGlobalScope('excludeDefault')
                 ->where('is_system_default', true)
-                ->first();
+                ->first()
+                ?->getAttributes();
         });
 
-        return $record instanceof self ? $record : null;
+        return is_array($attributes) ? (new self)->newFromBuilder($attributes) : null;
     }
 
     /*
@@ -141,15 +147,43 @@ class Jurisdiction extends Model
             return $this->sortedSections($this);
         }
 
-        // Wrap this in tags so the flush command can find it
-        /** @var Collection<int, Section> $masterSections */
-        $masterSections = Cache::tags(['jurisdictions'])->rememberForever('master_sections_collection', function () {
+        // Tagged so the flush on save can find it. Rows of raw attributes are cached
+        // rather than models, because Laravel 13 no longer unserializes cached objects.
+        $rows = Cache::tags(['jurisdictions'])->rememberForever('master_section_rows', function (): array {
             $master = $this->getDefaultRecord();
 
-            return $master ? $this->sortedSections($master) : collect();
+            if (! $master) {
+                return [];
+            }
+
+            return $this->sortedSections($master)
+                ->map(fn (Section $section): array => [
+                    'section' => $section->getAttributes(),
+                    'section_title' => $section->sectionTitle?->getAttributes(),
+                ])
+                ->values()
+                ->all();
         });
 
-        return $masterSections;
+        return new EloquentCollection(array_map(
+            fn (array $row): Section => $this->sectionFromCachedRow($row),
+            $rows,
+        ));
+    }
+
+    /**
+     * @param  array{section: array<string, mixed>, section_title: array<string, mixed>|null}  $row
+     */
+    private function sectionFromCachedRow(array $row): Section
+    {
+        $section = (new Section)->newFromBuilder($row['section']);
+
+        $section->setRelation(
+            'sectionTitle',
+            $row['section_title'] === null ? null : (new SectionTitle)->newFromBuilder($row['section_title']),
+        );
+
+        return $section;
     }
 
     /**
