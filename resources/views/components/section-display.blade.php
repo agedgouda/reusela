@@ -66,7 +66,8 @@
         @endif
     </div>
 
-    {{-- Delete Modal --}}
+    {{-- Delete Modal (editors only; the public page has no Flux scripts or delete rights) --}}
+    @if($editable)
     <flux:modal name="delete-{{ $model->id }}" class="min-w-[22rem]">
         <div class="space-y-6">
             <div>
@@ -85,4 +86,5 @@
             </div>
         </div>
     </flux:modal>
+    @endif
 </x-jurisdiction-card>

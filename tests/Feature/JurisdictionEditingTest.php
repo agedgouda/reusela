@@ -27,7 +27,8 @@ describe('public visitors (search page embed)', function () {
     it('can view a jurisdiction read-only', function () {
         Livewire::test(Show::class, ['jurisdiction' => $this->jurisdiction, 'editable' => false])
             ->assertSuccessful()
-            ->assertSee('Original text');
+            ->assertSee('Original text')
+            ->assertDontSee('Confirm Delete');
     });
 
     it('cannot make the component editable', function () {
