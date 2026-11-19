@@ -3,17 +3,22 @@
 namespace App\Livewire\User;
 
 use App\Models\User;
-use Livewire\Component;
+use Illuminate\Contracts\View\View;
 use Illuminate\Validation\Rule;
+use Livewire\Component;
 
 class Edit extends Component
 {
     public User $user;
 
     public string $name;
+
     public string $email;
 
-    protected function rules()
+    /**
+     * @return array<string, mixed>
+     */
+    protected function rules(): array
     {
         return [
             'name' => ['required', 'string', 'max:255'],
@@ -25,26 +30,26 @@ class Edit extends Component
         ];
     }
 
-    public function mount(User $user)
+    public function mount(User $user): void
     {
-        $this->user  = $user;
-        $this->name  = $user->name;
+        $this->user = $user;
+        $this->name = $user->name;
         $this->email = $user->email;
     }
 
-    public function save()
+    public function save(): void
     {
         $this->validate();
 
         $this->user->update([
-            'name'  => $this->name,
+            'name' => $this->name,
             'email' => $this->email,
         ]);
 
-        return redirect("/user/{$this->user->id}");
+        $this->redirectRoute('user.show', $this->user);
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.user.edit');
     }

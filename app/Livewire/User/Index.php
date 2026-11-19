@@ -3,22 +3,26 @@
 namespace App\Livewire\User;
 
 use App\Models\User;
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 
 class Index extends Component
 {
-    public $users; // Optional: if you want to make it accessible in the template directly
+    /**
+     * @var Collection<int, User>
+     */
+    public Collection $users;
 
-    public function mount()
+    public function mount(): void
     {
-        // Fetch all users when the component is mounted
         $this->users = User::all();
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.user.index', [
-            'users' => $this->users, // pass users to the view
+            'users' => $this->users,
         ]);
     }
 }

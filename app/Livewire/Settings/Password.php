@@ -2,13 +2,15 @@
 
 namespace App\Livewire\Settings;
 
-use Illuminate\Support\Facades\Auth;
+use App\Livewire\Concerns\InteractsWithAuthenticatedUser;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
 class Password extends Component
 {
+    use InteractsWithAuthenticatedUser;
+
     public string $current_password = '';
 
     public string $password = '';
@@ -31,7 +33,7 @@ class Password extends Component
             throw $e;
         }
 
-        Auth::user()->update([
+        $this->authenticatedUser()->update([
             'password' => $validated['password'],
         ]);
 
