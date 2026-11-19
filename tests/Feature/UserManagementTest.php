@@ -39,6 +39,19 @@ it('renders every user page for a logged-in user', function (string $routeName, 
     'edit' => ['user.edit', true],
 ]);
 
+it('binds the user form fields with plain wire:model', function (string $routeName, bool $needsUser) {
+    $parameters = $needsUser ? [$this->admin] : [];
+
+    $this->actingAs($this->admin)
+        ->get(route($routeName, $parameters))
+        ->assertSee('wire:model="name"', false)
+        ->assertSee('wire:model="email"', false)
+        ->assertDontSee('wire:model.defer', false);
+})->with([
+    'create' => ['user.create', false],
+    'edit' => ['user.edit', true],
+]);
+
 it('lists all users', function () {
     $other = User::factory()->create(['name' => 'Another Person']);
 

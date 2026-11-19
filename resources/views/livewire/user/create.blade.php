@@ -16,7 +16,7 @@
                 autofocus
                 autocomplete="name"
                 :placeholder="__('Name')"
-                wire:model.defer="name"
+                wire:model="name"
             />
 
         </div>
@@ -30,7 +30,7 @@
                 required
                 autocomplete="email"
                 placeholder="email@example.com"
-                wire:model.defer="email"
+                wire:model="email"
             />
         </div>
 
@@ -44,7 +44,7 @@
                 autocomplete="new-password"
                 :placeholder="__('Password')"
                 viewable
-                wire:model.defer="password"
+                wire:model="password"
             />
         </div>
 
@@ -58,7 +58,7 @@
                 autocomplete="new-password"
                 :placeholder="__('Confirm password')"
                 viewable
-                wire:model.defer="password_confirmation"
+                wire:model="password_confirmation"
             />
         </div>
 

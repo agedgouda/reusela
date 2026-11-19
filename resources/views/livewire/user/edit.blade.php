@@ -11,7 +11,7 @@
                     type="text"
                     required
                     autofocus
-                    wire:model.defer="name"
+                    wire:model="name"
                 />
                 @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
@@ -23,7 +23,7 @@
                     :label="__('Email address')"
                     type="email"
                     required
-                    wire:model.defer="email"
+                    wire:model="email"
                 />
                 @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>

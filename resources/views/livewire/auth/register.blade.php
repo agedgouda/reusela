@@ -18,7 +18,7 @@
                 autofocus
                 autocomplete="name"
                 :placeholder="__('Full name')"
-                wire:model.defer="name"
+                wire:model="name"
             />
             @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
 
@@ -30,7 +30,7 @@
                 required
                 autocomplete="email"
                 placeholder="email@example.com"
-                wire:model.defer="email"
+                wire:model="email"
             />
             @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
 
@@ -43,7 +43,7 @@
                 autocomplete="new-password"
                 :placeholder="__('Password')"
                 viewable
-                wire:model.defer="password"
+                wire:model="password"
             />
             @error('password') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
 
@@ -56,7 +56,7 @@
                 autocomplete="new-password"
                 :placeholder="__('Confirm password')"
                 viewable
-                wire:model.defer="password_confirmation"
+                wire:model="password_confirmation"
             />
 
             <div class="flex items-center justify-end">
