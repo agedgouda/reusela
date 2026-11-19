@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use RuntimeException;
 
 class Index extends Component
 {
@@ -59,6 +60,15 @@ class Index extends Component
             return;
         }
 
+        $civicApiKey = config('services.google_civic.api_key');
+
+        if (! is_string($civicApiKey) || $civicApiKey === '') {
+            report(new RuntimeException('GOOGLE_CIVIC_API_KEY is not configured.'));
+            $this->failLookup('Address lookup is temporarily unavailable. Please try again later.');
+
+            return;
+        }
+
         $rateLimitKey = 'address-lookup:'.request()->ip();
 
         if (RateLimiter::tooManyAttempts($rateLimitKey, self::LOOKUPS_PER_MINUTE)) {
@@ -83,10 +93,10 @@ class Index extends Component
              * We use Cache::tags(['jurisdictions']) so that this entire result
              * can be cleared whenever a Jurisdiction model is updated.
              */
-            $data = Cache::tags(['jurisdictions'])->remember($cacheKey, now()->addDays(7), function () use ($formattedAddress, $address) {
+            $data = Cache::tags(['jurisdictions'])->remember($cacheKey, now()->addDays(7), function () use ($formattedAddress, $address, $civicApiKey) {
                 $response = Http::timeout(5)->get('https://www.googleapis.com/civicinfo/v2/divisionsByAddress', [
                     'address' => $formattedAddress,
-                    'key' => config('services.google_civic.api_key'),
+                    'key' => $civicApiKey,
                 ]);
 
                 if ($response->successful()) {

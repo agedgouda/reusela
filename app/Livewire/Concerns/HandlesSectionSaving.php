@@ -11,7 +11,7 @@ trait HandlesSectionSaving
     /**
      * @param  array<string, mixed>  $data
      */
-    public function performSave(Model $model, array $data, ?Model $parent = null, string $foreignKey = 'jurisdiction_id', bool $addNew = false): ?Model
+    protected function performSave(Model $model, array $data, ?Model $parent = null, string $foreignKey = 'jurisdiction_id', bool $addNew = false): ?Model
     {
         $isNew = ! $model->exists;
 

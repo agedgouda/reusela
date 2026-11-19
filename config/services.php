@@ -33,7 +33,7 @@ return [
     ],
 
     'google_civic' => [
-        'api_key' => env('GOOGLE_CIVIC_API_KEY', env('GOOGLE_MAPS_API_KEY')),
+        'api_key' => env('GOOGLE_CIVIC_API_KEY'),
     ],
 
     'slack' => [

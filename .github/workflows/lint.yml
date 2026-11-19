@@ -3,15 +3,17 @@ name: linter
 on:
   push:
     branches:
+      - master
       - develop
       - main
   pull_request:
     branches:
+      - master
       - develop
       - main
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   quality:

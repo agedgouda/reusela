@@ -13,6 +13,7 @@ use App\Models\SectionTitle;
 use App\Models\SharedContent;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Exceptions\MethodNotFoundException;
 use Livewire\Features\SupportLockedProperties\CannotUpdateLockedPropertyException;
 use Livewire\Livewire;
 
@@ -51,6 +52,26 @@ describe('public visitors (search page embed)', function () {
         Livewire::test(Show::class, ['jurisdiction' => $this->jurisdiction, 'editable' => false])
             ->call('deleteSection', $this->section->id)
             ->assertForbidden();
+
+        expect(Section::find($this->section->id))->not->toBeNull();
+    });
+
+    it('cannot call internal section helpers directly', function (string $method, array $arguments) {
+        Livewire::test(Show::class, ['jurisdiction' => $this->jurisdiction, 'editable' => false])
+            ->call($method, ...$arguments);
+    })->with([
+        'performDelete' => fn () => ['performDelete', [$this->section->id, Section::class]],
+        'loadSections' => fn () => ['loadSections', [User::class]],
+        'traitRefreshSections' => fn () => ['traitRefreshSections', [User::class]],
+        'updateButtonVisibility' => fn () => ['updateButtonVisibility', []],
+    ])->throws(MethodNotFoundException::class);
+
+    it('leaves sections intact when a guest calls performDelete directly', function () {
+        try {
+            Livewire::test(Show::class, ['jurisdiction' => $this->jurisdiction, 'editable' => false])
+                ->call('performDelete', $this->section->id, Section::class);
+        } catch (MethodNotFoundException) {
+        }
 
         expect(Section::find($this->section->id))->not->toBeNull();
     });

@@ -10,8 +10,10 @@ trait HandlesSectionDeletions
     /**
      * @param  class-string<Section>  $modelClass
      */
-    public function performDelete(int|string $id, string $modelClass, string $notifyPrefix = 'Section'): void
+    protected function performDelete(int|string $id, string $modelClass, string $notifyPrefix = 'Section'): void
     {
+        $this->authorizeEditing();
+
         $section = $modelClass::find($id);
 
         if (! $section) {

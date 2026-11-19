@@ -131,6 +131,18 @@ it('uses the server-side civic api key', function () {
     Http::assertSent(fn ($request) => $request['key'] === 'server-key');
 });
 
+it('never sends the browser maps key to the civic api', function () {
+    config(['services.google_civic.api_key' => null, 'services.google_maps.api_key' => 'browser-key']);
+    fakeCivicApi();
+
+    Livewire::test(Index::class)
+        ->call('addressSelected', searchAddress())
+        ->assertHasErrors('address')
+        ->assertSet('jurisdiction', null);
+
+    Http::assertNothingSent();
+});
+
 it('resets the result when the address is cleared', function () {
     fakeCivicApi();
     Jurisdiction::factory()->create(['name' => 'Burbank']);

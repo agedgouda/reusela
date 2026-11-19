@@ -21,7 +21,7 @@ trait LoadsSections
      *
      * @param  class-string<Section>  $modelClass
      */
-    public function loadSections(string $modelClass, mixed $parentId = null, string $foreignKey = 'jurisdiction_id'): void
+    protected function loadSections(string $modelClass, mixed $parentId = null, string $foreignKey = 'jurisdiction_id'): void
     {
         $actionResults = app(GetSectionsAction::class)->execute($modelClass, $parentId, $foreignKey);
 
@@ -35,7 +35,7 @@ trait LoadsSections
      *
      * @param  class-string<Section>  $modelClass
      */
-    public function traitRefreshSections(string $modelClass, mixed $parentId = null, string $foreignKey = 'jurisdiction_id', bool $keepAdding = false): void
+    protected function traitRefreshSections(string $modelClass, mixed $parentId = null, string $foreignKey = 'jurisdiction_id', bool $keepAdding = false): void
     {
         $this->editingSectionId = null;
         $this->showAddSectionForm = $keepAdding;
@@ -47,7 +47,7 @@ trait LoadsSections
     /**
      * Shared visibility logic.
      */
-    public function updateButtonVisibility(): void
+    protected function updateButtonVisibility(): void
     {
         $this->showAddSectionButton = SectionTitle::count() !== $this->sections->count();
     }
