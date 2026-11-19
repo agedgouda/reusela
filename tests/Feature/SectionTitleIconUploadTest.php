@@ -134,3 +134,14 @@ it('cannot delete files outside the icons directory via a stored icon name', fun
 
     Storage::disk('public')->assertExists('secret.txt');
 });
+
+it('shows the upload progress bar only while uploading', function () {
+    $sectionTitle = SectionTitle::factory()->create();
+
+    $this->actingAs($this->user)
+        ->get(route('section-title.edit', $sectionTitle))
+        ->assertSuccessful()
+        ->assertSee('x-on:livewire-upload-progress="progress = $event.detail.progress"', false)
+        ->assertSee('x-show="uploading" x-cloak', false)
+        ->assertDontSee('style="width: 100%"', false);
+});

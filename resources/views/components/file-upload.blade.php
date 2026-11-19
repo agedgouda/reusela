@@ -5,6 +5,11 @@
 
 <div
     x-data="fileUpload()"
+    x-on:livewire-upload-start="uploading = true; progress = 0"
+    x-on:livewire-upload-progress="progress = $event.detail.progress"
+    x-on:livewire-upload-finish="uploading = false"
+    x-on:livewire-upload-error="uploading = false"
+    x-on:livewire-upload-cancel="uploading = false"
     class="w-full"
 >
 
@@ -26,9 +31,9 @@
             <span class="text-blue-600 underline cursor-pointer" @click.prevent="selectFile">browse</span>
         </div>
 
-        {{-- Progress bar --}}
-        <div wire:loading wire:target="{{ $attributes->wire('model') }}" class="w-full bg-gray-200 rounded h-2 mt-2">
-            <div class="bg-green-500 h-2 rounded" style="width: 100%"></div>
+        {{-- Progress bar: only shown while a file is uploading --}}
+        <div x-show="uploading" x-cloak class="w-full bg-gray-200 rounded h-2 mt-2" role="progressbar" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="progress">
+            <div class="bg-green-500 h-2 rounded transition-[width] duration-200" :style="`width: ${progress}%`"></div>
         </div>
 
         {{-- Preview of new upload --}}
@@ -58,6 +63,8 @@ function fileUpload() {
     return {
         dragOver: false,
         preview: null,
+        uploading: false,
+        progress: 0,
 
         selectFile() {
             this.$refs.fileInput.click();
