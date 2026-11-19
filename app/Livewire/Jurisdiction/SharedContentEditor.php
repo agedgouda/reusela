@@ -2,45 +2,52 @@
 
 namespace App\Livewire\Jurisdiction;
 
-use Livewire\Component;
+use App\Livewire\Concerns\InteractsWithAuthenticatedUser;
 use App\Models\SharedContent;
+use Illuminate\Contracts\View\View;
+use Livewire\Component;
 
 class SharedContentEditor extends Component
 {
+    use InteractsWithAuthenticatedUser;
+
     public string $content = '';
 
-    public $originalContent;
+    public string $originalContent = '';
 
-    public function mount()
+    public function mount(): void
     {
+        $this->authorizeEditing();
+
         // Load the initial content only
-        $this->content = SharedContent::where('key', 'jurisdiction.show')->value('content') ?? '';
+        $content = SharedContent::where('key', 'jurisdiction.show')->value('content');
+        $this->content = is_string($content) ? $content : '';
         $this->originalContent = $this->content;
     }
 
-    public function save()
+    public function save(): void
     {
-        // 1. Update the database
+        $this->authorizeEditing();
+
         SharedContent::updateOrCreate(
             ['key' => 'jurisdiction.show'],
             ['content' => $this->content]
         );
 
-        // 2. Clear the specific cache key
         cache()->forget('shared.jurisdiction.show');
 
-        // 3. Proceed with feedback
         $this->dispatch('content-saved', content: $this->content);
         session()->flash('saved', true);
     }
 
-    public function cancel()
+    public function cancel(): void
     {
         session()->flash('active_tab', 'content');
-        $currentUrl = request()->header('referer') ?: url()->current();
-        return redirect($currentUrl)->with('active_tab', 'content');
+
+        $this->redirectRoute('jurisdiction.index');
     }
-    public function render()
+
+    public function render(): View
     {
         return view('livewire.jurisdiction.shared-content-editor');
     }

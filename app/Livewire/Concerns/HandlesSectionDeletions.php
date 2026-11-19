@@ -3,25 +3,28 @@
 namespace App\Livewire\Concerns;
 
 use App\Actions\DeleteSectionAction;
+use App\Models\Section;
 
 trait HandlesSectionDeletions
 {
-    public function performDelete($id, string $modelClass, string $notifyPrefix = 'Section')
+    /**
+     * @param  class-string<Section>  $modelClass
+     */
+    public function performDelete(int|string $id, string $modelClass, string $notifyPrefix = 'Section'): void
     {
         $section = $modelClass::find($id);
 
-        if ($section) {
-            // CALLING THE ACTION HERE
-            $name = app(DeleteSectionAction::class)->execute($section);
-
-            if (method_exists($this, 'refreshSections')) {
-                $this->refreshSections();
-            }
-
-            $this->dispatch('notify',
-                message: "{$notifyPrefix} '{$name}' deleted successfully.",
-                type: 'success'
-            );
+        if (! $section) {
+            return;
         }
+
+        $name = app(DeleteSectionAction::class)->execute($section);
+
+        $this->refreshSections();
+
+        $this->dispatch('notify',
+            message: "{$notifyPrefix} '{$name}' deleted successfully.",
+            type: 'success'
+        );
     }
 }

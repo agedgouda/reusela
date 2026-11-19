@@ -9,8 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 trait InteractsWithAuthenticatedUser
 {
     /**
-     * The logged-in user. These components only run behind the auth middleware,
-     * so a missing user means the session ended mid-request.
+     * The logged-in user. Aborts with 403 when nobody is logged in.
      */
     protected function authenticatedUser(): User
     {
@@ -19,5 +18,15 @@ trait InteractsWithAuthenticatedUser
         abort_unless($user instanceof User, Response::HTTP_FORBIDDEN);
 
         return $user;
+    }
+
+    /**
+     * Every logged-in user is an admin, so editing only requires a login. Components
+     * that are also embedded on the public search page must call this in every action
+     * that changes data, because Livewire actions can be called directly by any visitor.
+     */
+    protected function authorizeEditing(): void
+    {
+        $this->authenticatedUser();
     }
 }

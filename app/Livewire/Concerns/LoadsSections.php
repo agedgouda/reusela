@@ -3,31 +3,39 @@
 namespace App\Livewire\Concerns;
 
 use App\Actions\GetSectionsAction;
+use App\Models\Section;
 use App\Models\SectionTitle;
 use Illuminate\Support\Collection;
 
 trait LoadsSections
 {
+    /**
+     * @var Collection<int, Section>
+     */
     public Collection $sections;
+
     public bool $showAddSectionButton = true;
 
     /**
-     * The core data loading method
+     * The core data loading method.
+     *
+     * @param  class-string<Section>  $modelClass
      */
-public function loadSections(string $modelClass, mixed $parentId = null, string $foreignKey = 'jurisdiction_id')
-{
-    $actionResults = app(GetSectionsAction::class)->execute($modelClass, $parentId, $foreignKey);
+    public function loadSections(string $modelClass, mixed $parentId = null, string $foreignKey = 'jurisdiction_id'): void
+    {
+        $actionResults = app(GetSectionsAction::class)->execute($modelClass, $parentId, $foreignKey);
 
-    if ($actionResults->isEmpty()) {
-        $this->sections = $this->jurisdiction->display_sections;
-    } else {
-        $this->sections = $actionResults;
+        $this->sections = $actionResults->isEmpty()
+            ? $this->jurisdiction->display_sections
+            : $actionResults;
     }
-}
+
     /**
-     * Shared refresh logic for both Show and DefaultContent
+     * Shared refresh logic for both Show and DefaultContent.
+     *
+     * @param  class-string<Section>  $modelClass
      */
-    public function traitRefreshSections(string $modelClass, mixed $parentId = null, string $foreignKey = 'jurisdiction_id', bool $keepAdding = false)
+    public function traitRefreshSections(string $modelClass, mixed $parentId = null, string $foreignKey = 'jurisdiction_id', bool $keepAdding = false): void
     {
         $this->editingSectionId = null;
         $this->showAddSectionForm = $keepAdding;
@@ -37,9 +45,9 @@ public function loadSections(string $modelClass, mixed $parentId = null, string 
     }
 
     /**
-     * Shared visibility logic
+     * Shared visibility logic.
      */
-    public function updateButtonVisibility()
+    public function updateButtonVisibility(): void
     {
         $this->showAddSectionButton = SectionTitle::count() !== $this->sections->count();
     }

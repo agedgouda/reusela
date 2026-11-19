@@ -2,27 +2,39 @@
 
 namespace App\Livewire\Section;
 
-use Livewire\Component;
-use App\Models\SectionTitle;
 use App\Livewire\Concerns\HandlesSectionSaving;
+use App\Livewire\Concerns\InteractsWithAuthenticatedUser;
+use App\Models\Jurisdiction;
+use App\Models\Section;
+use App\Models\SectionTitle;
+use Illuminate\Contracts\View\View;
+use Livewire\Attributes\Locked;
+use Livewire\Component;
 
 class EditSection extends Component
 {
-    use HandlesSectionSaving;
+    use HandlesSectionSaving, InteractsWithAuthenticatedUser;
 
-    public $model;
-    public $parentModel;
-    public $foreignKey;
-    public $newSectionTitleId;
-    public $newSectionText;
-    public string $modelClass;
+    #[Locked]
+    public Section $model;
 
-    public function mount($model, $parentModel = null, $foreignKey = 'jurisdiction_id')
+    #[Locked]
+    public ?Jurisdiction $parentModel = null;
+
+    #[Locked]
+    public string $foreignKey = 'jurisdiction_id';
+
+    public int|string|null $newSectionTitleId = null;
+
+    public ?string $newSectionText = null;
+
+    public function mount(Section $model, ?Jurisdiction $parentModel = null, string $foreignKey = 'jurisdiction_id'): void
     {
+        $this->authorizeEditing();
+
         $this->model = $model;
         $this->parentModel = $parentModel;
         $this->foreignKey = $foreignKey;
-        $this->modelClass = get_class($model);
 
         if ($this->model->exists) {
             $this->newSectionTitleId = $this->model->section_title_id;
@@ -30,9 +42,11 @@ class EditSection extends Component
         }
     }
 
-    public function save($addNew = false)
+    public function save(bool $addNew = false): void
     {
-        $this->model = $this->performSave(
+        $this->authorizeEditing();
+
+        $savedModel = $this->performSave(
             $this->model,
             ['section_title_id' => $this->newSectionTitleId, 'text' => $this->newSectionText],
             $this->parentModel,
@@ -40,31 +54,37 @@ class EditSection extends Component
             $addNew
         );
 
-        if ($addNew) $this->resetForm();
+        if ($savedModel instanceof Section) {
+            $this->model = $savedModel;
+        }
+
+        if ($addNew) {
+            $this->resetForm();
+        }
     }
 
-    public function resetForm()
+    public function resetForm(): void
     {
-        $this->model = new $this->modelClass;
+        $this->model = new Section;
         $this->newSectionTitleId = null;
         $this->newSectionText = '';
     }
 
-    public function closeEditor()
+    public function closeEditor(): void
     {
         // Tell the parent component to hide this form
         $this->dispatch('cancelAddSection');
     }
 
-    public function render()
+    public function render(): View
     {
-        $usedTitleIds = $this->modelClass::query()
-            ->when($this->model->exists, fn($q) => $q->where('id', '!=', $this->model->id))
-            ->when($this->parentModel, fn($q) => $q->where($this->foreignKey, $this->parentModel->id))
+        $usedTitleIds = Section::query()
+            ->when($this->model->exists, fn ($query) => $query->where('id', '!=', $this->model->id))
+            ->when($this->parentModel, fn ($query, Jurisdiction $parent) => $query->where($this->foreignKey, $parent->id))
             ->pluck('section_title_id');
 
         return view('livewire.section.edit-section', [
-            'availableSectionTitles' => SectionTitle::whereNotIn('id', $usedTitleIds)->orderBy('sort_order')->get()
+            'availableSectionTitles' => SectionTitle::whereNotIn('id', $usedTitleIds)->orderBy('sort_order')->get(),
         ]);
     }
 }

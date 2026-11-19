@@ -4,7 +4,9 @@ namespace App\Livewire\SectionTitle;
 
 use App\Models\SectionTitle;
 use App\Traits\HandlesIconUpload;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 
 class Edit extends Component
@@ -13,18 +15,18 @@ class Edit extends Component
 
     public SectionTitle $sectionTitle;
 
-    public $title;
+    public string $title = '';
 
-    public $icon;
+    public ?TemporaryUploadedFile $icon = null;
 
-    public function mount(SectionTitle $sectionTitle)
+    public function mount(SectionTitle $sectionTitle): void
     {
         $this->sectionTitle = $sectionTitle;
         $this->title = $sectionTitle->title;
         $this->icon = null; // new upload is optional
     }
 
-    public function save()
+    public function save(): void
     {
         $this->validate([
             'title' => 'required|string|max:255',
@@ -38,10 +40,10 @@ class Edit extends Component
             'icon' => $filename,
         ]);
 
-        return redirect()->route('section-title.index');
+        $this->redirectRoute('section-title.index');
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.section-title.edit');
     }

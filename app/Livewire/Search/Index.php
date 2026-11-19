@@ -3,6 +3,7 @@
 namespace App\Livewire\Search;
 
 use App\Models\Jurisdiction;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
@@ -20,16 +21,16 @@ class Index extends Component
     public const LOOKUPS_PER_MINUTE = 10;
 
     #[Locked]
-    public $address;
+    public ?string $address = null;
 
     #[Locked]
-    public $city;
+    public ?string $city = null;
 
     #[Locked]
-    public $jurisdiction;
+    public ?Jurisdiction $jurisdiction = null;
 
     #[Locked]
-    public $isProcessing = false;
+    public bool $isProcessing = false;
 
     /**
      * @param  array{location?: mixed, locality?: mixed, state?: mixed, postal_code?: mixed}|null  $address
@@ -89,9 +90,9 @@ class Index extends Component
                 ]);
 
                 if ($response->successful()) {
-                    $civicData = $response->json();
-                    $hasPlace = collect(array_keys($civicData['divisions'] ?? []))
-                        ->contains(fn ($k) => str_contains($k, 'place'));
+                    $divisions = $response->json('divisions');
+                    $hasPlace = is_array($divisions) && collect(array_keys($divisions))
+                        ->contains(fn (int|string $division) => str_contains((string) $division, 'place'));
 
                     $city = $hasPlace ? $address['locality'] : 'Unincorporated';
 
@@ -110,7 +111,7 @@ class Index extends Component
             });
 
             if ($data) {
-                $this->city = $data['city'];
+                $this->city = is_string($data['city']) ? $data['city'] : null;
                 $this->address = $data['address_label'];
                 $this->jurisdiction = $data['jurisdiction'];
             }
@@ -131,7 +132,7 @@ class Index extends Component
         $this->dispatch('error-processing');
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.search.index', [
             'google_maps_api_key' => config('services.google_maps.api_key'),

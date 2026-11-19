@@ -4,25 +4,28 @@ namespace App\Livewire\SectionTitle;
 
 use App\Models\SectionTitle;
 use App\Traits\HandlesIconUpload;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 
 class Create extends Component
 {
     use HandlesIconUpload, WithFileUploads;
 
-    public $title = '';
+    public string $title = '';
 
-    public $icon;
+    public ?TemporaryUploadedFile $icon = null;
 
-    public function save()
+    public function save(): void
     {
         $this->validate([
             'title' => 'required|string|max:255',
             'icon' => ['required', ...$this->iconRules()],
         ]);
 
-        $nextSortOrder = SectionTitle::max('sort_order') + 1;
+        $highestSortOrder = SectionTitle::max('sort_order');
+        $nextSortOrder = (is_numeric($highestSortOrder) ? (int) $highestSortOrder : 0) + 1;
 
         $filename = $this->saveIcon($this->icon); // reuse trait
 
@@ -32,10 +35,10 @@ class Create extends Component
             'sort_order' => $nextSortOrder,
         ]);
 
-        return redirect()->route('section-title.index');
+        $this->redirectRoute('section-title.index');
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.section-title.create');
     }

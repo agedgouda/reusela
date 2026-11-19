@@ -2,25 +2,38 @@
 
 namespace App\Livewire\Jurisdiction;
 
+use App\Livewire\Concerns\InteractsWithAuthenticatedUser;
 use App\Models\Section;
 use App\Models\SectionTitle;
 use App\Support\HtmlLinks;
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Collection;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class EditSection extends Component
 {
+    use InteractsWithAuthenticatedUser;
+
+    #[Locked]
     public string $jurisdictionId;
 
+    #[Locked]
     public Section $section;
 
     public ?string $newSectionTitleId = null;
 
     public ?string $newSectionText = null;
 
-    public $availableSectionTitles = [];
+    /**
+     * @var Collection<int, SectionTitle>
+     */
+    public Collection $availableSectionTitles;
 
-    public function mount($jurisdictionId, ?Section $section = null)
+    public function mount(string $jurisdictionId, ?Section $section = null): void
     {
+        $this->authorizeEditing();
+
         $this->jurisdictionId = $jurisdictionId;
         $this->section = $section ?? new Section;
 
@@ -29,12 +42,11 @@ class EditSection extends Component
 
         // If editing, load section values into form
         if ($this->section->exists) {
-            $this->newSectionTitleId = $this->section->section_title_id;
+            $this->newSectionTitleId = (string) $this->section->section_title_id;
             $this->newSectionText = $this->section->text;
         }
 
         $this->refreshAvailableTitles();
-
     }
 
     public function cancel(): void
@@ -42,8 +54,10 @@ class EditSection extends Component
         $this->closeEditor();
     }
 
-    public function save($addNew = false)
+    public function save(bool $addNew = false): void
     {
+        $this->authorizeEditing();
+
         if ($this->section->exists) {
             // Editing an existing section
             $this->section->update([
@@ -81,7 +95,7 @@ class EditSection extends Component
         }
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.jurisdiction.edit-section');
     }
@@ -95,7 +109,7 @@ class EditSection extends Component
         }
     }
 
-    protected function refreshAvailableTitles()
+    protected function refreshAvailableTitles(): void
     {
         $usedTitleIds = Section::where('jurisdiction_id', $this->jurisdictionId)
             ->pluck('section_title_id')

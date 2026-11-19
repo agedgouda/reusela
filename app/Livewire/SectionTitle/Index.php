@@ -2,38 +2,46 @@
 
 namespace App\Livewire\SectionTitle;
 
-use Livewire\Component;
 use App\Models\SectionTitle;
+use Illuminate\Contracts\View\View;
+use Livewire\Component;
 
 class Index extends Component
 {
-    // Use array of arrays to avoid model serialization problems in nested/Flux contexts
+    /**
+     * Array of arrays to avoid model serialization problems in nested/Flux contexts.
+     *
+     * @var list<array{id: string, title: string, sort_order: int|null, icon: string|null}>
+     */
     public array $titles = [];
 
-    public function mount()
+    public function mount(): void
     {
         $this->loadTitles();
     }
 
     protected function loadTitles(): void
     {
-        $this->titles = SectionTitle::orderBy('sort_order')->get()->map(function ($t) {
-            return [
-                'id' => (string) $t->id,
-                'title' => $t->title,
-                'sort_order' => $t->sort_order,
-                'icon' => $t->icon,
-            ];
-        })->toArray();
+        $titles = SectionTitle::orderBy('sort_order')->get()
+            ->map(fn (SectionTitle $title) => [
+                'id' => (string) $title->id,
+                'title' => $title->title,
+                'sort_order' => $title->sort_order,
+                'icon' => $title->icon,
+            ])
+            ->all();
+
+        $this->titles = array_values($titles);
     }
 
     /**
      * Called from the browser when Sortable finishes.
-     * $orderedIds will be an array of ids (strings).
+     *
+     * @param  array<int, int|string>  $orderedIds
      */
     public function updateSortOrder(array $orderedIds): void
     {
-        foreach ($orderedIds as $index => $id) {
+        foreach (array_values($orderedIds) as $index => $id) {
             SectionTitle::where('id', $id)->update(['sort_order' => $index + 1]);
         }
 
@@ -41,7 +49,7 @@ class Index extends Component
         $this->loadTitles();
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.section-title.index');
     }

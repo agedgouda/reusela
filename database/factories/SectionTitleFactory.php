@@ -20,7 +20,7 @@ class SectionTitleFactory extends Factory
         return [
             'title' => fake()->words(2, true),
             'sort_order' => fake()->numberBetween(1, 100),
-            'icon' => null,
+            'icon' => fake()->uuid().'.png',
         ];
     }
 }
