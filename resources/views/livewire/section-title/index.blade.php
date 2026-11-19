@@ -6,45 +6,16 @@
         Create New
     </a>
 
-    <!-- Sortable container: rendered server-side so keys/data are scalar -->
-    <div
-        id="section-title-sortable"
-        class="mt-6 space-y-2"
-        x-data
-        x-init="
-            // wait one tick to ensure Alpine/Livewire are ready
-            setTimeout(() => {
-                if (!window.Sortable) {
-                    console.warn('Sortable.js not loaded.');
-                    return;
-                }
-
-                // destroy previous instance if present
-                if ($el._sortableInstance) {
-                    $el._sortableInstance.destroy();
-                }
-
-                $el._sortableInstance = new Sortable($el, {
-                    animation: 150,
-                    handle: '.handle',
-                    onEnd: function() {
-                        // gather ordered ids (as strings)
-                        const ordered = Array.from($el.children).map(ch => ch.dataset.id);
-                        // call Livewire method
-                        $wire.updateSortOrder(ordered);
-                    }
-                });
-            }, 0);
-        "
-    >
+    {{-- Drag-and-drop ordering uses Livewire's built-in wire:sort (no external script). --}}
+    <div id="section-title-sortable" class="mt-6 space-y-2" wire:sort="moveTitle">
 
         @foreach($titles as $title)
             <div
-                data-id="{{ $title['id'] }}"
+                wire:sort:item="{{ $title['id'] }}"
                 wire:key="st-{{ $title['id'] }}"
                 class="p-3 border rounded flex items-center justify-between bg-white shadow-sm"
             >
-                <div class="handle cursor-move pr-4 text-gray-400 hover:text-gray-600">☰</div>
+                <div wire:sort:handle class="cursor-move pr-4 text-gray-400 hover:text-gray-600">☰</div>
 
                 <div class="flex-1">
                     <div class="flex items-center font-medium space-x-2">

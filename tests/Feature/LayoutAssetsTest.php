@@ -2,16 +2,31 @@
 
 declare(strict_types=1);
 
+use App\Models\SectionTitle;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('loads SortableJS from the CDN only with a pinned integrity hash', function () {
+it('uses built-in wire:sort instead of loading SortableJS from a CDN', function () {
+    $title = SectionTitle::factory()->create();
+
     $this->actingAs(User::factory()->create())
         ->get(route('section-title.index'))
         ->assertSuccessful()
-        ->assertSee('src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js" integrity="sha512-Eezs+g9Lq4TCCq0wae01s9PuNWzHYoCMkE97e2qdkYthpI0pzC3UGB03lgEHn2XM85hDOUF6qgqqszs+iXU4UA==" crossorigin="anonymous"', false);
+        ->assertSee('wire:sort="moveTitle"', false)
+        ->assertSee('wire:sort:item="'.$title->id.'"', false)
+        ->assertSee('wire:sort:handle', false)
+        ->assertDontSee('Sortable.min.js', false)
+        ->assertDontSee('cdnjs.cloudflare.com', false);
+});
+
+it('reloads the page on an expired session using the Livewire 4 request interceptor', function () {
+    $this->actingAs(User::factory()->create())
+        ->get(route('section-title.index'))
+        ->assertSee('Livewire.interceptRequest', false)
+        ->assertSee('response.status === 419', false)
+        ->assertDontSee("Livewire.hook('request'", false);
 });
 
 it('does not ship Volt or livewire-sortable', function () {

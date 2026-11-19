@@ -35,17 +35,32 @@ class Index extends Component
     }
 
     /**
-     * Called from the browser when Sortable finishes.
-     *
-     * @param  array<int, int|string>  $orderedIds
+     * Called by wire:sort when a title is dropped at a new zero-based position.
      */
-    public function updateSortOrder(array $orderedIds): void
+    public function moveTitle(int|string $id, int $position): void
     {
-        foreach (array_values($orderedIds) as $index => $id) {
-            SectionTitle::where('id', $id)->update(['sort_order' => $index + 1]);
+        /** @var list<string> $orderedIds */
+        $orderedIds = [];
+
+        foreach (SectionTitle::query()->orderBy('sort_order')->orderBy('id')->pluck('id') as $titleId) {
+            if (is_int($titleId) || is_string($titleId)) {
+                $orderedIds[] = (string) $titleId;
+            }
         }
 
-        // reload titles so blade reflects the new order
+        $currentIndex = array_search((string) $id, $orderedIds, true);
+
+        if ($currentIndex === false) {
+            return;
+        }
+
+        array_splice($orderedIds, $currentIndex, 1);
+        array_splice($orderedIds, max(0, min($position, count($orderedIds))), 0, [(string) $id]);
+
+        foreach ($orderedIds as $index => $titleId) {
+            SectionTitle::whereKey($titleId)->update(['sort_order' => $index + 1]);
+        }
+
         $this->loadTitles();
     }
 

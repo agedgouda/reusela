@@ -150,9 +150,10 @@
         @livewireScripts
         <script>
         document.addEventListener('livewire:init', () => {
-            Livewire.hook('request', ({ fail }) => {
-                fail(({ status, preventDefault }) => {
-                    if (status === 419) {
+            // Reload when the session/CSRF token has expired instead of showing Livewire's error modal.
+            Livewire.interceptRequest(({ onError }) => {
+                onError(({ response, preventDefault }) => {
+                    if (response.status === 419) {
                         preventDefault();
                         window.location.reload();
                     }
@@ -160,7 +161,6 @@
             });
         });
         </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js" integrity="sha512-Eezs+g9Lq4TCCq0wae01s9PuNWzHYoCMkE97e2qdkYthpI0pzC3UGB03lgEHn2XM85hDOUF6qgqqszs+iXU4UA==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
 
         @fluxScripts
         <x-notification-toast />
